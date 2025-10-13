@@ -16,9 +16,9 @@ class Rectangle(Shape):
             return True
         return False
 
-    def move_by(self, point: Point):
-        self.p1 = Point(self.p1.x + point.x, self.p1.y + point.y)
-        self.p2 = Point(self.p2.x + point.y, self.p2.y + point.y)
+    def move_by(self, translation_vector: Point):
+        self.p1 += translation_vector
+        self.p2 += translation_vector
 
     def resize_by(self, point: Point):
         self.p2 = point

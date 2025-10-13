@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication
 from model.canvas_model import CanvasModel
-from presenter_new import Presenter
+from presenter import Presenter
 from view.view import View
 
 def main():

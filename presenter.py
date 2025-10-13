@@ -46,7 +46,15 @@ class Presenter:
             case Tools.ELLIPSE:
                 pass
             case Tools.SELECT:
-                pass
+                self.model.clear_selection()
+                shape = self.model.shape_at(clicked_point)
+                if shape:
+                    shape.selected = True
+                    self.selected_shape = shape
+                    self.dragging = True
+                    self.last_mouse_pos = clicked_point
+                else:
+                    self.selected_shape = None
             case Tools.NONE:
                 return
         self.view.refresh()
@@ -55,14 +63,21 @@ class Presenter:
     def handle_mouse_release(self, released_point : Point):
         self.drawing_shape = None
         self.start_pos = None
+        self.dragging = False
+        self.selected_shape = None
         self.view.refresh()
 
 
     def handle_mouse_move(self, current_point : Point):
         if self.drawing_shape is not None:
             self.drawing_shape.resize_by(current_point)
+        if self.selected_shape is not None and self.dragging:
+            translation_vector = Point(current_point.x - self.last_mouse_pos.x,
+                                current_point.y - self.last_mouse_pos.y)
+            self.selected_shape.move_by(translation_vector)
+            self.last_mouse_pos = current_point
         self.view.refresh()
-        pass
+
 
     def get_shapes(self):
         return self.model.shapes

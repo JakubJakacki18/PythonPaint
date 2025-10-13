@@ -12,7 +12,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.drawButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(True))
         self.scaleButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(False))
-        self.moveButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(False))
+        self.moveButton.clicked.connect(lambda: self.toggle_move_button())
 
         self.freeDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.FREE_DRAW))
         self.lineDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.LINE))
@@ -26,3 +26,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def toggle_secondary_bar_frame(self, is_visible : bool):
         self.secondaryBarFrame.setVisible(is_visible)
+
+    def toggle_move_button(self):
+        self.toggle_secondary_bar_frame(False)
+        self.presenter.set_tool(Tools.SELECT)
