@@ -1,9 +1,10 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPen, QColor, QPainter
+from PyQt6.QtCore import Qt, QPointF
+from PyQt6.QtGui import QPen, QColor, QPainter, QPolygonF
 
 from model.ellipse import Ellipse
 from model.pen import Pen
 from model.rectangle import Rectangle
+from model.triangle import Triangle
 
 
 class ShapeRenderer:
@@ -24,6 +25,17 @@ class ShapeRenderer:
                          int(ellipse.p1.y),
                          int(ellipse.p2.x - ellipse.p1.x),
                          int(ellipse.p2.y - ellipse.p1.y))
+    @staticmethod
+    def draw_triangle(painter : QPainter, pen:Pen, triangle: Triangle):
+        qt_pen = ShapeRenderer.initialize_pen(pen)
+        painter.setPen(qt_pen)
+        a_vertex,b_vertex,c_vertex = triangle.get_vertex()
+        polygon = QPolygonF([
+            QPointF(int(a_vertex.x),int(a_vertex.y)),
+            QPointF(int(b_vertex.x),int(b_vertex.y)),
+            QPointF(int(c_vertex.x),int(c_vertex.y)),
+        ])
+        painter.drawPolygon(polygon)
     @staticmethod
     def initialize_pen(pen:Pen) -> QPen:
         q_color = QColor(*pen.color)
