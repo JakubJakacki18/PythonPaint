@@ -32,5 +32,5 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.presenter.set_tool(Tools.SELECT)
 
     def toggle_scale_button(self):
-        self.toggle_secondary_bar_frame(True)
+        self.toggle_secondary_bar_frame(False)
         self.presenter.set_tool(Tools.SCALE)

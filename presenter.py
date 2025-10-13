@@ -1,5 +1,6 @@
 from unittest import case
 
+from model.ellipse import Ellipse
 from view.main_window import Ui_MainWindow
 from view.view import View
 from model.canvas_model import CanvasModel
@@ -41,7 +42,8 @@ class Presenter:
             case Tools.LINE:
                 pass
             case Tools.ELLIPSE:
-                pass
+                self.drawing_shape = Ellipse(self.current_pen, clicked_point, clicked_point)
+                self.model.add_shape(self.drawing_shape)
             case Tools.SELECT | Tools.SCALE:
                 self.model.clear_selection()
                 shape = self.model.shape_at(clicked_point)

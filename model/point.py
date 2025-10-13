@@ -17,3 +17,13 @@ class Point:
         if not isinstance(other, Point):
             raise TypeError()
         return Point(self.x + other.x, self.y + other.y)
+
+    def __truediv__(self, other):
+        if not isinstance(other, (int, float)):
+            raise TypeError(f"Nie można dzielić przez {type(other)}")
+        try:
+            new_x = self.x / other
+            new_y = self.y / other
+        except ZeroDivisionError:
+            return self
+        return Point(new_x, new_y)

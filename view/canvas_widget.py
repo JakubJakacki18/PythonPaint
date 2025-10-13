@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtCore import Qt, QPointF
+from PyQt6.QtCore import Qt, QPointF, QRect
 
 from model.point import Point
 from utils.draw_map import DRAW_MAP
@@ -34,4 +34,11 @@ class CanvasWidget(QtWidgets.QWidget):
             for shape in self.presenter.get_shapes():
                 render_func = DRAW_MAP.get(type(shape))
                 render_func(painter,self.presenter.current_pen ,shape)
+                if self.presenter.selected_shape:
+                    painter.setPen(QtGui.QPen(Qt.GlobalColor.blue, 1, Qt.PenStyle.DashLine))
+                    x1, y1, x2, y2 = self.presenter.selected_shape.bounding_box()
+                    width=x2-x1
+                    height=y2-y1
+                    painter.drawRect(QRect(int(x1), int(y1), int(width), int(height)))
+
     
