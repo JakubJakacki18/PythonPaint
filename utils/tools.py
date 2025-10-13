@@ -10,3 +10,4 @@ class Tools(Enum):
     TEXT="TEXT"
     NONE="NONE"
     SELECT = "SELECT"
+    SCALE = "SCALE"

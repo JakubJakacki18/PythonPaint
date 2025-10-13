@@ -37,15 +37,12 @@ class Presenter:
                 self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
                 self.model.add_shape(self.drawing_shape)
                 #     self.model.add_shape(self.drawing_shape)
-
-
-
                 pass
             case Tools.LINE:
                 pass
             case Tools.ELLIPSE:
                 pass
-            case Tools.SELECT:
+            case Tools.SELECT | Tools.SCALE:
                 self.model.clear_selection()
                 shape = self.model.shape_at(clicked_point)
                 if shape:
@@ -55,7 +52,7 @@ class Presenter:
                     self.last_mouse_pos = clicked_point
                 else:
                     self.selected_shape = None
-            case Tools.NONE:
+            case Tools.NONE | _:
                 return
         self.view.refresh()
         pass
@@ -74,7 +71,12 @@ class Presenter:
         if self.selected_shape is not None and self.dragging:
             translation_vector = Point(current_point.x - self.last_mouse_pos.x,
                                 current_point.y - self.last_mouse_pos.y)
-            self.selected_shape.move_by(translation_vector)
+            if self.tool == Tools.SELECT:
+                self.selected_shape.move_by(translation_vector)
+            elif self.tool == Tools.SCALE:
+                self.selected_shape.resize_by(current_point)
+            else:
+                raise Exception("Operation is forbidden")
             self.last_mouse_pos = current_point
         self.view.refresh()
 

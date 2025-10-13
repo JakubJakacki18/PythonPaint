@@ -11,7 +11,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.secondaryBarFrame.hide()
 
         self.drawButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(True))
-        self.scaleButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(False))
+        self.scaleButton.clicked.connect(lambda: self.toggle_scale_button())
         self.moveButton.clicked.connect(lambda: self.toggle_move_button())
 
         self.freeDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.FREE_DRAW))
@@ -30,3 +30,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def toggle_move_button(self):
         self.toggle_secondary_bar_frame(False)
         self.presenter.set_tool(Tools.SELECT)
+
+    def toggle_scale_button(self):
+        self.toggle_secondary_bar_frame(True)
+        self.presenter.set_tool(Tools.SCALE)
