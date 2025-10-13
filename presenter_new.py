@@ -1,0 +1,68 @@
+from unittest import case
+
+from view.main_window import Ui_MainWindow
+from view.view import View
+from model.canvas_model import CanvasModel
+from model.pen import Pen
+from model.point import Point
+from model.rectangle import Rectangle
+from utils.tools import Tools
+
+
+class Presenter:
+    def __init__(self, model: CanvasModel, view: View ):
+        self.model = model
+        self.view = view
+        self.tool = Tools.NONE
+        self.current_pen = Pen()
+        self.drawing_shape = None
+        self.start_pos = None
+        self.dragging = False
+        self.selected_shape = None
+        self.last_mouse_pos = None
+
+    def set_tool(self, tool: Tools):
+        self.tool = tool
+        self.drawing_shape = None
+        self.model.clear_selection()
+        self.selected_shape = None
+        self.view.refresh()
+
+    def handle_mouse_press(self, clicked_point : Point):
+        self.start_pos = clicked_point
+        match self.tool:
+            case Tools.FREE_DRAW:
+                pass
+            case Tools.RECTANGLE:
+                self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
+                self.model.add_shape(self.drawing_shape)
+                #     self.model.add_shape(self.drawing_shape)
+
+
+
+                pass
+            case Tools.LINE:
+                pass
+            case Tools.ELLIPSE:
+                pass
+            case Tools.SELECT:
+                pass
+            case Tools.NONE:
+                return
+        self.view.refresh()
+        pass
+
+    def handle_mouse_release(self, released_point : Point):
+        self.drawing_shape = None
+        self.start_pos = None
+        self.view.refresh()
+
+
+    def handle_mouse_move(self, current_point : Point):
+        if self.drawing_shape is not None:
+            self.drawing_shape.resize_by(current_point)
+        self.view.refresh()
+        pass
+
+    def get_shapes(self):
+        return self.model.shapes
