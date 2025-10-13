@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QPen, QColor, QPainter, QPolygonF
 
 from model.ellipse import Ellipse
+from model.line import Line
 from model.pen import Pen
 from model.rectangle import Rectangle
 from model.triangle import Triangle
@@ -36,6 +37,14 @@ class ShapeRenderer:
             QPointF(int(c_vertex.x),int(c_vertex.y)),
         ])
         painter.drawPolygon(polygon)
+
+    @staticmethod
+    def draw_line(painter : QPainter, pen:Pen, line: Line):
+        qt_pen = ShapeRenderer.initialize_pen(pen)
+        painter.setPen(qt_pen)
+        # print("Line: ",int(line.p1.x),int(line.p1.y),int(line.p2.x - line.p1.x),int(line.p2.y - line.p1.y))
+        painter.drawLine(QPointF(int(line.p1.x),int(line.p1.y)),
+                         QPointF(int(line.p2.x),int(line.p2.y)))
     @staticmethod
     def initialize_pen(pen:Pen) -> QPen:
         q_color = QColor(*pen.color)

@@ -2,6 +2,7 @@ from unittest import case
 
 from model.ellipse import Ellipse
 from model.triangle import Triangle
+from model.line import Line
 from view.main_window import Ui_MainWindow
 from view.view import View
 from model.canvas_model import CanvasModel
@@ -39,7 +40,8 @@ class Presenter:
                 self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
                 self.model.add_shape(self.drawing_shape)
             case Tools.LINE:
-                pass
+                self.drawing_shape = Line(self.current_pen,clicked_point,clicked_point)
+                self.model.add_shape(self.drawing_shape)
             case Tools.TRIANGLE:
                 self.drawing_shape = Triangle(self.current_pen,clicked_point,clicked_point)
                 self.model.add_shape(self.drawing_shape)
