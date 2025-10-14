@@ -1,11 +1,13 @@
 from PyQt6.QtCore import Qt, QPointF
-from PyQt6.QtGui import QPen, QColor, QPainter, QPolygonF
+from PyQt6.QtGui import QPen, QColor, QPainter, QPolygonF, QPainterPath
 
 from model.ellipse import Ellipse
+from model.free_draw import FreeDraw
 from model.line import Line
 from model.pen import Pen
 from model.rectangle import Rectangle
 from model.triangle import Triangle
+from utils.point_converter import PointConverter
 
 
 class ShapeRenderer:
@@ -45,6 +47,18 @@ class ShapeRenderer:
         # print("Line: ",int(line.p1.x),int(line.p1.y),int(line.p2.x - line.p1.x),int(line.p2.y - line.p1.y))
         painter.drawLine(QPointF(int(line.p1.x),int(line.p1.y)),
                          QPointF(int(line.p2.x),int(line.p2.y)))
+    @staticmethod
+    def draw_free(painter:QPainter, pen:Pen, free_draw : FreeDraw):
+        qt_pen = ShapeRenderer.initialize_pen(pen)
+        painter.setPen(qt_pen)
+        path = QPainterPath()
+        q_points = PointConverter.convert_point_to_qpoint_f(*free_draw.points_list)
+        if q_points:
+            print(type(q_points[0]))
+            path.moveTo(q_points[0])
+            for q_point in q_points[1:]:
+                path.lineTo(q_point)
+        painter.drawPath(path)
     @staticmethod
     def initialize_pen(pen:Pen) -> QPen:
         q_color = QColor(*pen.color)

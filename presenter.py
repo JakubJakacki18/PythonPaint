@@ -1,6 +1,7 @@
 from unittest import case
 
 from model.ellipse import Ellipse
+from model.free_draw import FreeDraw
 from model.triangle import Triangle
 from model.line import Line
 from view.main_window import Ui_MainWindow
@@ -35,7 +36,8 @@ class Presenter:
         self.start_pos = clicked_point
         match self.tool:
             case Tools.FREE_DRAW:
-                pass
+                self.drawing_shape = FreeDraw(self.current_pen,clicked_point)
+                self.model.add_shape(self.drawing_shape)
             case Tools.RECTANGLE:
                 self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
                 self.model.add_shape(self.drawing_shape)
@@ -72,12 +74,14 @@ class Presenter:
 
 
     def handle_mouse_move(self, current_point : Point):
-        if self.drawing_shape is not None:
+        if self.drawing_shape is not None and self.tool != Tools.FREE_DRAW:
             self.drawing_shape.resize_by(current_point)
+        if self.drawing_shape is not None:
+            self.drawing_shape.add_point(current_point)
         if self.selected_shape is not None and self.dragging:
-            translation_vector = Point(current_point.x - self.last_mouse_pos.x,
-                                current_point.y - self.last_mouse_pos.y)
             if self.tool == Tools.SELECT:
+                translation_vector = Point(current_point.x - self.last_mouse_pos.x,
+                                           current_point.y - self.last_mouse_pos.y)
                 self.selected_shape.move_by(translation_vector)
             elif self.tool == Tools.SCALE:
                 self.selected_shape.resize_by(current_point)

@@ -96,6 +96,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="textButton">
+            <property name="text">
+             <string>Tekst</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -235,7 +242,7 @@
   <customwidget>
    <class>CanvasWidget</class>
    <extends>QWidget</extends>
-   <header>view.canvas_widget</header>
+   <header>canvas_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
