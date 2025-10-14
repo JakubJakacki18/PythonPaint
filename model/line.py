@@ -11,12 +11,5 @@ class Line(Shape):
         self.p1 = p1
         self.p2 = p2
 
-    def move_by(self, translation_vector: Point):
-        self.p1 += translation_vector
-        self.p2 += translation_vector
-
     def resize_by(self, point: Point):
         self.p2 = point
-
-    def bounding_box(self) -> Tuple[float, float, float, float]:
-        return self.p1.x, self.p1.y, self.p2.x, self.p2.y

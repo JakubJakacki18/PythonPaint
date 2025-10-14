@@ -42,7 +42,7 @@ class Presenter:
                 self.drawing_shape = FreeDraw(self.current_pen,clicked_point)
                 self.model.add_shape(self.drawing_shape)
             case Tools.TEXT:
-                self.drawing_shape = Text(self.current_pen,clicked_point,clicked_point)
+                self.drawing_shape = Text(self.current_pen,clicked_point)
                 self.model.add_shape(self.drawing_shape)
             case Tools.RECTANGLE:
                 self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
@@ -71,7 +71,7 @@ class Presenter:
         self.view.refresh()
         pass
 
-    def handle_mouse_release(self, released_point : Point):
+    def handle_mouse_release(self):
         if self.tool != Tools.TEXT:
             self.drawing_shape = None
         self.start_pos = None
@@ -81,7 +81,7 @@ class Presenter:
 
 
     def handle_mouse_move(self, current_point : Point):
-        if self.drawing_shape is not None:
+        if self.drawing_shape is not None and self.tool != Tools.TEXT:
             if self.tool == Tools.FREE_DRAW:
                 self.drawing_shape.add_point(current_point)
             else:

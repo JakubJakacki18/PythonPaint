@@ -1,12 +1,13 @@
 from model.pen import Pen
 from model.point import Point
-from model.rectangle import Rectangle
+from model.shape import Shape
 
 
-class Text(Rectangle):
-    def __init__(self,pen: Pen, p1 : Point, p2: Point):
-        super().__init__(pen,p1,p2)
+class Text(Shape):
+    def __init__(self,pen: Pen, p1 : Point):
+        super().__init__(pen)
         self.text = str()
+        self.p1 = p1
 
     def set_text(self,text:str):
         self.text += text

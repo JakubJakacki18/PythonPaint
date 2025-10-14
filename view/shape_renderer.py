@@ -18,11 +18,11 @@ class ShapeRenderer:
         font = QFont("Arial", 14)
         painter.setFont(font)
         painter.setPen(qt_pen)
-        # painter.drawText(PointConverter.convert_point_to_qpoint_f(text.p1,)[0],text.text)
-        painter.drawText(QRectF(text.p1.x,
-                         text.p1.y,
-                         text.p2.x-text.p1.x,
-                         text.p2.y-text.p1.y),Qt.AlignmentFlag.AlignLeft | Qt.TextFlag.TextWordWrap,text.text)
+        painter.drawText(PointConverter.convert_point_to_qpoint_f(text.p1,)[0],text.text)
+        # painter.drawText(QRectF(text.p1.x,
+        #                  text.p1.y,
+        #                  text.p2.x-text.p1.x,
+        #                  text.p2.y-text.p1.y),Qt.AlignmentFlag.AlignLeft | Qt.TextFlag.TextWordWrap,text.text)
 
     @staticmethod
     def draw_rectangle(painter : QPainter, pen:Pen, rect:Rectangle):

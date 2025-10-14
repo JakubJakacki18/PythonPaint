@@ -26,7 +26,7 @@ class CanvasWidget(QtWidgets.QWidget):
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
         pos = Point(event.position().x(), event.position().y())
         if self.presenter:
-            self.presenter.handle_mouse_release(pos)
+            self.presenter.handle_mouse_release()
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
