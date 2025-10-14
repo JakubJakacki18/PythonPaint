@@ -9,6 +9,7 @@ class CanvasWidget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WidgetAttribute.WA_StaticContents)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
         self.presenter = None
 
@@ -41,4 +42,8 @@ class CanvasWidget(QtWidgets.QWidget):
                     height=y2-y1
                     painter.drawRect(QRect(int(x1), int(y1), int(width), int(height)))
 
-    
+    def keyPressEvent(self, event: QtGui.QKeyEvent):
+        print("Kod klawisza:", event.key())
+        print("Znak:", event.text())
+        if self.presenter:
+            self.presenter.handle_key_press(event)

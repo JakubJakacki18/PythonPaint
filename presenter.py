@@ -1,7 +1,10 @@
 from unittest import case
 
+from PyQt6.QtCore import Qt
+
 from model.ellipse import Ellipse
 from model.free_draw import FreeDraw
+from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
 from view.main_window import Ui_MainWindow
@@ -38,6 +41,9 @@ class Presenter:
             case Tools.FREE_DRAW:
                 self.drawing_shape = FreeDraw(self.current_pen,clicked_point)
                 self.model.add_shape(self.drawing_shape)
+            case Tools.TEXT:
+                self.drawing_shape = Text(self.current_pen,clicked_point,clicked_point)
+                self.model.add_shape(self.drawing_shape)
             case Tools.RECTANGLE:
                 self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
                 self.model.add_shape(self.drawing_shape)
@@ -66,7 +72,8 @@ class Presenter:
         pass
 
     def handle_mouse_release(self, released_point : Point):
-        self.drawing_shape = None
+        if self.tool != Tools.TEXT:
+            self.drawing_shape = None
         self.start_pos = None
         self.dragging = False
         self.selected_shape = None
@@ -74,10 +81,11 @@ class Presenter:
 
 
     def handle_mouse_move(self, current_point : Point):
-        if self.drawing_shape is not None and self.tool != Tools.FREE_DRAW:
-            self.drawing_shape.resize_by(current_point)
         if self.drawing_shape is not None:
-            self.drawing_shape.add_point(current_point)
+            if self.tool == Tools.FREE_DRAW:
+                self.drawing_shape.add_point(current_point)
+            else:
+                self.drawing_shape.resize_by(current_point)
         if self.selected_shape is not None and self.dragging:
             if self.tool == Tools.SELECT:
                 translation_vector = Point(current_point.x - self.last_mouse_pos.x,
@@ -88,6 +96,14 @@ class Presenter:
             else:
                 raise Exception("Operation is forbidden")
             self.last_mouse_pos = current_point
+        self.view.refresh()
+
+    def handle_key_press(self,event):
+        if self.drawing_shape is not None and self.tool == Tools.TEXT:
+            if event.key() == Qt.Key.Key_Backspace:
+                self.drawing_shape.delete_last_character()
+            elif event.text().isprintable():
+                self.drawing_shape.set_text(event.text())
         self.view.refresh()
 
 
