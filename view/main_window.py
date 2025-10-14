@@ -103,7 +103,7 @@ class Ui_MainWindow(object):
         self.centralWidget.addWidget(self.canvasFrame)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(parent=self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -115,7 +115,10 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName("actionOpen")
         self.actionClose = QtGui.QAction(parent=MainWindow)
         self.actionClose.setObjectName("actionClose")
+        self.actionSave = QtGui.QAction(parent=MainWindow)
+        self.actionSave.setObjectName("actionSave")
         self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionSave)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionClose)
         self.menubar.addAction(self.menuFile.menuAction())
@@ -138,6 +141,7 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(_translate("MainWindow", "Plik"))
         self.actionOpen.setText(_translate("MainWindow", "Otwórz"))
         self.actionClose.setText(_translate("MainWindow", "Zakończ"))
+        self.actionSave.setText(_translate("MainWindow", "Zapisz"))
 from view.canvas_widget import CanvasWidget
 
 

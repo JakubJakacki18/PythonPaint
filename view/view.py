@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from utils.tools import Tools
 from view.main_window import Ui_MainWindow
@@ -21,6 +21,10 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ellipseDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.ELLIPSE))
         self.rectangleDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.RECTANGLE))
 
+        self.actionSave.triggered.connect(lambda: self.save_file())
+        self.actionOpen.triggered.connect(lambda: presenter.open())
+        self.actionClose.triggered.connect(lambda: presenter.close())
+
 
     def refresh(self):
         self.canvasPlaceholder.update()
@@ -39,3 +43,18 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def toggle_text_button(self):
         self.toggle_secondary_bar_frame(False)
         self.presenter.set_tool(Tools.TEXT)
+
+    def save_file(self):
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Zapisz rysunek jako obraz",
+            "",
+            "PNG (*.png);;JPEG (*.jpg);;BMP (*.bmp)"
+        )
+        if filename:
+            self.presenter.save_canvas(filename)
+
+    def save_pixmap(self, filename: str):
+        pixmap = QtGui.QPixmap(self.canvasPlaceholder.size())
+        self.canvasPlaceholder.render(pixmap)
+        pixmap.save(filename)

@@ -109,3 +109,12 @@ class Presenter:
 
     def get_shapes(self):
         return self.model.shapes
+
+    def save_canvas(self, filename: str):
+        self.view.save_pixmap(filename)
+
+    def close(self):
+        pass
+
+    def open(self):
+        pass
