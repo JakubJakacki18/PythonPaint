@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication
 from model.canvas_model import CanvasModel
 from presenter import Presenter
-from view.view import View
+from view.main_window import View
 
 def main():
     app = QApplication(sys.argv)

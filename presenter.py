@@ -7,8 +7,8 @@ from model.free_draw import FreeDraw
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
-from view.main_window import Ui_MainWindow
-from view.view import View
+from view.color_dialog import ColorDialog
+from view.main_window import View
 from model.canvas_model import CanvasModel
 from model.pen import Pen
 from model.point import Point
@@ -118,3 +118,7 @@ class Presenter:
 
     def open(self):
         pass
+
+    def set_color(self):
+        dialog = ColorDialog()
+        dialog.exec()
