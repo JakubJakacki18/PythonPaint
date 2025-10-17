@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from model.pen import Pen
 from model.point import Point
@@ -6,7 +6,7 @@ from model.rectangle_shape import RectangleShape
 
 
 class Ellipse(RectangleShape):
-    def __init__(self,pen:Pen, p1 : Point, p2 : Point):
+    def __init__(self,pen:Pen, p1 : Point, p2: Optional[Point] = None):
         super().__init__(pen,p1,p2)
 
     def contains(self, p: Point) -> bool:

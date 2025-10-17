@@ -17,10 +17,11 @@ from utils.tools import Tools
 
 
 class Presenter:
-    def __init__(self, model: CanvasModel, view: View ):
+    def __init__(self, model: CanvasModel, view: View | None,shape_factories):
         self.model = model
         self.view = view
         self.tool = Tools.NONE
+        self.shape_factories = shape_factories
         self.current_pen = Pen()
         self.drawing_shape = None
         self.start_pos = None
@@ -37,25 +38,13 @@ class Presenter:
 
     def handle_mouse_press(self, clicked_point : Point):
         self.start_pos = clicked_point
+        if self.tool in self.shape_factories:
+            factory = self.shape_factories[self.tool]
+            self.drawing_shape = factory(self.current_pen, clicked_point)
+            self.model.add_shape(self.drawing_shape)
+            self.view.refresh()
+            return
         match self.tool:
-            case Tools.FREE_DRAW:
-                self.drawing_shape = FreeDraw(self.current_pen,clicked_point)
-                self.model.add_shape(self.drawing_shape)
-            case Tools.TEXT:
-                self.drawing_shape = Text(self.current_pen,clicked_point)
-                self.model.add_shape(self.drawing_shape)
-            case Tools.RECTANGLE:
-                self.drawing_shape = Rectangle(self.current_pen,clicked_point,clicked_point)
-                self.model.add_shape(self.drawing_shape)
-            case Tools.LINE:
-                self.drawing_shape = Line(self.current_pen,clicked_point,clicked_point)
-                self.model.add_shape(self.drawing_shape)
-            case Tools.TRIANGLE:
-                self.drawing_shape = Triangle(self.current_pen,clicked_point,clicked_point)
-                self.model.add_shape(self.drawing_shape)
-            case Tools.ELLIPSE:
-                self.drawing_shape = Ellipse(self.current_pen, clicked_point, clicked_point)
-                self.model.add_shape(self.drawing_shape)
             case Tools.SELECT | Tools.SCALE:
                 self.model.clear_selection()
                 shape = self.model.shape_at(clicked_point)
@@ -67,9 +56,9 @@ class Presenter:
                 else:
                     self.selected_shape = None
             case Tools.NONE | _:
+                print(f"Selected tool: {self.tool}")
                 return
         self.view.refresh()
-        pass
 
     def handle_mouse_release(self):
         if self.tool != Tools.TEXT:
