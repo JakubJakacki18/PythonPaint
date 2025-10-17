@@ -31,16 +31,17 @@ class CanvasWidget(QtWidgets.QWidget):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.fillRect(self.rect(), QtGui.QColor('white'))
-        if self.presenter:
-            for shape in self.presenter.get_shapes():
-                render_func = DRAW_MAP.get(type(shape))
-                render_func(painter,self.presenter.current_pen ,shape)
-                if self.presenter.selected_shape:
-                    painter.setPen(QtGui.QPen(Qt.GlobalColor.blue, 1, Qt.PenStyle.DashLine))
-                    x1, y1, x2, y2 = self.presenter.selected_shape.bounding_box()
-                    width=x2-x1
-                    height=y2-y1
-                    painter.drawRect(QRect(int(x1), int(y1), int(width), int(height)))
+        if not self.presenter:
+            return
+        for shape in self.presenter.get_shapes():
+            render_func = DRAW_MAP.get(type(shape))
+            render_func(painter,self.presenter.current_pen ,shape)
+            if self.presenter.selected_shape:
+                painter.setPen(QtGui.QPen(Qt.GlobalColor.blue, 1, Qt.PenStyle.DashLine))
+                x1, y1, x2, y2 = self.presenter.selected_shape.bounding_box()
+                width=x2-x1
+                height=y2-y1
+                painter.drawRect(QRect(int(x1), int(y1), int(width), int(height)))
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
         print("Kod klawisza:", event.key())

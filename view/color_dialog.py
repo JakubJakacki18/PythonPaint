@@ -21,6 +21,9 @@ class ColorDialog(QDialog, Ui_ColorWindow):
         self.cmykYellowSpinBox.valueChanged.connect(self.update_from_cmyk)
         self.cmykBlackSpinBox.valueChanged.connect(self.update_from_cmyk)
 
+        self.update_from_rgb()
+
+
     def update_from_rgb(self):
         if self._updating:
             return

@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         self.textButton = QtWidgets.QPushButton(parent=self.primaryBarFrame)
         self.textButton.setObjectName("textButton")
         self.horizontalLayout.addWidget(self.textButton)
-        self.verticalLayout.addWidget(self.primaryBarFrame)
+        self.verticalLayout.addWidget(self.primaryBarFrame, 0, QtCore.Qt.AlignmentFlag.AlignTop)
         self.secondaryBarFrame = QtWidgets.QFrame(parent=self.navFrame)
         self.secondaryBarFrame.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.secondaryBarFrame.setObjectName("secondaryBarFrame")

@@ -8,6 +8,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.presenter = presenter
         self.canvasPlaceholder.presenter = presenter
+        self.navFrame.setFixedHeight(self.navFrame.sizeHint().height())
         self.secondaryBarFrame.hide()
         self.drawButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(True))
         self.scaleButton.clicked.connect(lambda: self.toggle_scale_button())
