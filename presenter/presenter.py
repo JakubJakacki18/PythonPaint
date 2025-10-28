@@ -1,12 +1,16 @@
+import copy
 from unittest import case
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog
 
+from model.color_model import ColorModel
 from model.ellipse import Ellipse
 from model.free_draw import FreeDraw
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
+from .dialog_presenter import DialogPresenter
 from view.color_dialog import ColorDialog
 from view.main_window import View
 from model.canvas_model import CanvasModel
@@ -40,7 +44,7 @@ class Presenter:
         self.start_pos = clicked_point
         if self.tool in self.shape_factories:
             factory = self.shape_factories[self.tool]
-            self.drawing_shape = factory(self.current_pen, clicked_point)
+            self.drawing_shape = factory(copy.deepcopy(self.current_pen), clicked_point)
             self.model.add_shape(self.drawing_shape)
             self.view.refresh()
             return
@@ -109,5 +113,12 @@ class Presenter:
         pass
 
     def set_color(self):
-        dialog = ColorDialog()
-        dialog.exec()
+        dialog_presenter = DialogPresenter(ColorModel(*self.current_pen.color),None)
+        dialog = ColorDialog(dialog_presenter)
+        dialog_presenter.view = dialog
+        dialog.update_from_rgb()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            color = dialog_presenter.model
+            print(color)
+            self.current_pen = Pen((color.r,color.g,color.b),2)
+            self.view.colorButton.setStyleSheet(f"background-color: rgb({color.r}, {color.g}, {color.b});")

@@ -7,7 +7,7 @@ from model.line import Line
 from model.rectangle import Rectangle
 from model.text import Text
 from model.triangle import Triangle
-from presenter import Presenter
+from presenter.presenter import Presenter
 from utils.tools import Tools
 from view.main_window import View
 

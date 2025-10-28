@@ -9,7 +9,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pyqt6 (>=6.9.1,<7.0.0)",
-    "dependency-injector (>=4.48.2,<5.0.0)"
+    "dependency-injector (>=4.48.2,<5.0.0)",
+    "pyopengl (>=3.1.10,<4.0.0)"
 ]
 
 

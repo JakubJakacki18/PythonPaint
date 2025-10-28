@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>400</height>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,10 +33,10 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QOpenGLWidget" name="coneOpenGL"/>
+          <widget class="ConeGlWidget" name="coneOpenGlWidget" native="true"/>
          </item>
          <item>
-          <widget class="QOpenGLWidget" name="cubeOpenGL"/>
+          <widget class="CubeGlWidget" name="cubeOpenGlWidget" native="true"/>
          </item>
         </layout>
        </widget>
@@ -333,17 +333,56 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QFrame" name="frame_7">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="colorLabel">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ConeGlWidget</class>
+   <extends>QWidget</extends>
+   <header>view.cone_gl_widget</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CubeGlWidget</class>
+   <extends>QWidget</extends>
+   <header>view.cube_gl_widget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

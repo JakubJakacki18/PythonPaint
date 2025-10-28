@@ -35,7 +35,7 @@ class CanvasWidget(QtWidgets.QWidget):
             return
         for shape in self.presenter.get_shapes():
             render_func = DRAW_MAP.get(type(shape))
-            render_func(painter,self.presenter.current_pen ,shape)
+            render_func(painter,shape.pen ,shape)
             if self.presenter.selected_shape:
                 painter.setPen(QtGui.QPen(Qt.GlobalColor.blue, 1, Qt.PenStyle.DashLine))
                 x1, y1, x2, y2 = self.presenter.selected_shape.bounding_box()
