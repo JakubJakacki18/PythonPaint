@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
@@ -42,10 +42,10 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item alignment="Qt::AlignTop">
+       <item alignment="Qt::AlignmentFlag::AlignTop">
         <widget class="QFrame" name="primaryBarFrame">
          <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+          <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="spacing">
@@ -103,7 +103,7 @@
        <item>
         <widget class="QFrame" name="secondaryBarFrame">
          <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+          <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <property name="spacing">
@@ -180,7 +180,7 @@
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -196,10 +196,10 @@
     <item>
      <widget class="QFrame" name="bottomBar">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
@@ -212,7 +212,7 @@
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -233,7 +233,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -241,6 +241,8 @@
      <string>Plik</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionImport"/>
+    <addaction name="actionExport"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -261,6 +263,31 @@
   <action name="actionSave">
    <property name="text">
     <string>Zapisz</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Importuj</string>
+   </property>
+  </action>
+  <action name="actionPBM">
+   <property name="text">
+    <string>PBM</string>
+   </property>
+  </action>
+  <action name="actionPGM">
+   <property name="text">
+    <string>PGM</string>
+   </property>
+  </action>
+  <action name="actionPPM">
+   <property name="text">
+    <string>PPM</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Eksportuj</string>
    </property>
   </action>
  </widget>

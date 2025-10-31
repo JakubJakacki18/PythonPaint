@@ -27,6 +27,7 @@ class Presenter:
         self.tool = Tools.NONE
         self.shape_factories = shape_factories
         self.current_pen = Pen()
+        self.width = 2
         self.drawing_shape = None
         self.start_pos = None
         self.dragging = False
@@ -119,6 +120,11 @@ class Presenter:
         dialog.update_from_rgb()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             color = dialog_presenter.model
-            print(color)
-            self.current_pen = Pen((color.r,color.g,color.b),2)
-            self.view.colorButton.setStyleSheet(f"background-color: rgb({color.r}, {color.g}, {color.b});")
+            self.current_pen = Pen((color.r,color.g,color.b),self.width)
+            self.view.set_color_button(color.r,color.g,color.b)
+
+    def export_file(self, filename, ext):
+
+        pass
+    def export_as(self):
+        pass

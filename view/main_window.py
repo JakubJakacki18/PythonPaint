@@ -1,3 +1,5 @@
+import os
+
 from PyQt6 import QtWidgets, QtGui
 
 from utils.tools import Tools
@@ -25,6 +27,8 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionOpen.triggered.connect(lambda: presenter.open())
         self.actionClose.triggered.connect(lambda: presenter.close())
 
+        self.actionExport.triggered.connect(lambda: self.export_file_as())
+
         self.colorButton.clicked.connect(lambda: presenter.set_color())
         self.set_color_button(0,0,0)
 
@@ -48,14 +52,23 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.presenter.set_tool(Tools.TEXT)
 
     def save_file(self):
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+        filename, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
             self,
             "Zapisz rysunek jako obraz",
             "",
             "PNG (*.png);;JPEG (*.jpg);;BMP (*.bmp)"
         )
-        if filename:
-            self.presenter.save_canvas(filename)
+        if not filename:
+            return
+        base, ext = os.path.splitext(filename)
+        if not ext:
+            if "png" in selected_filter.lower():
+                filename += ".png"
+            elif "jpg" in selected_filter.lower():
+                filename += ".jpg"
+            elif "bmp" in selected_filter.lower():
+                filename += ".bmp"
+        self.presenter.save_canvas(filename)
 
     def save_pixmap(self, filename: str):
         pixmap = QtGui.QPixmap(self.canvasPlaceholder.size())
@@ -65,3 +78,22 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_color_button(self,r:int,g:int,b:int):
         q_color = QtGui.QColor(r,g,b)
         self.colorButton.setStyleSheet(f"background-color: {q_color.name()};")
+
+    def export_file_as(self):
+        filename, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Eksportuj rysunek jako",
+            "",
+            "BPM (*.bpm);;PPM (*.ppm);;BGP (*.bgp)"
+        )
+        if not filename:
+            return
+        base, ext = os.path.splitext(filename)
+        if not ext:
+            if "bpm" in selected_filter.lower():
+                filename += ".bpm"
+            elif "ppm" in selected_filter.lower():
+                filename += ".ppm"
+            elif "bgp" in selected_filter.lower():
+                filename += ".bgp"
+        self.presenter.export_file(filename,ext)
