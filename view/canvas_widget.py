@@ -12,6 +12,7 @@ class CanvasWidget(QtWidgets.QWidget):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
         self.presenter = None
+        self.image = None
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         pos = Point(event.position().x(), event.position().y())
@@ -31,6 +32,8 @@ class CanvasWidget(QtWidgets.QWidget):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.fillRect(self.rect(), QtGui.QColor('white'))
+        if self.image:
+            painter.drawImage(0, 0, self.image)
         if not self.presenter:
             return
         for shape in self.presenter.get_shapes():
@@ -48,3 +51,7 @@ class CanvasWidget(QtWidgets.QWidget):
         print("Znak:", event.text())
         if self.presenter:
             self.presenter.handle_key_press(event)
+
+    def set_image(self, image: QtGui.QImage):
+        self.image = image
+        self.update()

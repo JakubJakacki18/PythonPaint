@@ -1,6 +1,7 @@
 import os
 
 from PyQt6 import QtWidgets, QtGui
+from PyQt6.QtGui import QImage
 
 from utils.tools import Tools
 from view.main_window_ui import Ui_MainWindow
@@ -28,6 +29,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionClose.triggered.connect(lambda: presenter.close())
 
         self.actionExport.triggered.connect(lambda: self.export_file_as())
+        self.actionImport.triggered.connect(lambda: self.import_file())
 
         self.colorButton.clicked.connect(lambda: presenter.set_color())
         self.set_color_button(0,0,0)
@@ -97,3 +99,11 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             elif "bgp" in selected_filter.lower():
                 filename += ".bgp"
         self.presenter.export_file(filename,ext)
+
+    def import_file(self):
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","BPM (*.bpm);;PPM (*.ppm);;BGP (*.bgp)")
+        self.presenter.import_file(filename)
+
+    def draw_image(self,pixels,width,height,max_rgb_value):
+        image = QImage(pixels,width,height,3 * width, QImage.Format.Format_RGB888)
+        self.canvasPlaceholder.set_image(image)

@@ -10,6 +10,7 @@ from model.free_draw import FreeDraw
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
+from utils.pnm_importer import PnmImporter
 from .dialog_presenter import DialogPresenter
 from view.color_dialog import ColorDialog
 from view.main_window import View
@@ -128,3 +129,7 @@ class Presenter:
         pass
     def export_as(self):
         pass
+
+    def import_file(self,filename: str):
+        pixels, width,height,max_rgb_value = PnmImporter.get_pixels_and_max_value_from_file(filename)
+        self.view.draw_image(pixels,width,height,max_rgb_value)
