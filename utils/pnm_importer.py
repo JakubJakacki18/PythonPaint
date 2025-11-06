@@ -30,6 +30,14 @@ class PnmFormat(Enum):
 class PnmImporter:
     @staticmethod
     @measure_time
+    def export_file(filename : str, algorithm : PnmFormat, arr, max_value : int):
+        with open(filename, "wb") as f:
+            f.write(algorithm.value.encode("utf-8"))
+
+
+        pass
+    @staticmethod
+    @measure_time
     def get_pixels_and_max_value_from_file(filename) -> Tuple[Union[List[List[int]], List[List[List[int]]]],int]:
         print(f"Trwa praca nad plikiem {filename}")
         with open(filename, 'rb') as f:

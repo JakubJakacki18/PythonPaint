@@ -12,7 +12,7 @@ from model.image import Image
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
-from utils.pnm_importer import PnmImporter
+from utils.pnm_importer import PnmImporter, PnmFormat
 from .dialog_presenter import DialogPresenter
 from view.color_dialog import ColorDialog
 from view.main_window import View
@@ -24,7 +24,7 @@ from utils.tools import Tools
 
 
 class Presenter:
-    def __init__(self, model: CanvasModel, view: View | None,shape_factories):
+    def __init__(self, model: CanvasModel, view: View | None, shape_factories):
         self.model = model
         self.view = view
         self.tool = Tools.NONE
@@ -44,7 +44,7 @@ class Presenter:
         self.selected_shape = None
         self.view.refresh()
 
-    def handle_mouse_press(self, clicked_point : Point):
+    def handle_mouse_press(self, clicked_point: Point):
         self.start_pos = clicked_point
         if self.tool in self.shape_factories:
             factory = self.shape_factories[self.tool]
@@ -76,8 +76,7 @@ class Presenter:
         self.selected_shape = None
         self.view.refresh()
 
-
-    def handle_mouse_move(self, current_point : Point):
+    def handle_mouse_move(self, current_point: Point):
         if self.drawing_shape is not None and self.tool != Tools.TEXT:
             if self.tool == Tools.FREE_DRAW:
                 self.drawing_shape.add_point(current_point)
@@ -95,14 +94,13 @@ class Presenter:
             self.last_mouse_pos = current_point
         self.view.refresh()
 
-    def handle_key_press(self,event):
+    def handle_key_press(self, event):
         if self.drawing_shape is not None and self.tool == Tools.TEXT:
             if event.key() == Qt.Key.Key_Backspace:
                 self.drawing_shape.delete_last_character()
             elif event.text().isprintable():
                 self.drawing_shape.set_text(event.text())
         self.view.refresh()
-
 
     def get_shapes(self):
         return self.model.shapes
@@ -117,34 +115,33 @@ class Presenter:
         pass
 
     def set_color(self):
-        dialog_presenter = DialogPresenter(ColorModel(*self.current_pen.color),None)
+        dialog_presenter = DialogPresenter(ColorModel(*self.current_pen.color), None)
         dialog = ColorDialog(dialog_presenter)
         dialog_presenter.view = dialog
         dialog.update_from_rgb()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             color = dialog_presenter.model
-            self.current_pen = Pen((color.r,color.g,color.b),self.width)
-            self.view.set_color_button(color.r,color.g,color.b)
+            self.current_pen = Pen((color.r, color.g, color.b), self.width)
+            self.view.set_color_button(color.r, color.g, color.b)
 
     def export_file(self, filename, selected_filter):
         base, ext = os.path.splitext(filename)
         selected_filter_lower = selected_filter.lower()
 
-        if "bpm" in selected_filter_lower:
-            new_ext = "bpm"
+        if "pbm" in selected_filter_lower:
+            new_ext = "pbm"
         elif "ppm" in selected_filter_lower:
             new_ext = "ppm"
-        elif "bgp" in selected_filter_lower:
-            new_ext = "bgp"
+        elif "pgp" in selected_filter_lower:
+            new_ext = "pgp"
         else:
             raise ValueError("Filter was not recognized")
 
-        if ext is None:
-            ext= new_ext
-            filename+="."+ext
-        if ext is not None and new_ext != ext:
+        if not ext:
+            ext = new_ext
+            filename += "." + ext
+        elif new_ext != ext:
             raise ValueError("File extension does not match")
-
 
         if "text" in selected_filter_lower:
             mode = "text"
@@ -152,27 +149,28 @@ class Presenter:
             mode = "binary"
         else:
             raise ValueError("Nie przekazano trybu exportu")
-
+        mode_function = lambda p_text, p_binary: p_text if mode == "text" else p_binary
         match ext:
-            case "bpm":
-
+            case "pbm":
+                algorithm = mode_function(PnmFormat.PBM_TEXT, PnmFormat.PBM_BINARY)
             case "ppm":
-                pass
-            case "bgp":
+                algorithm = mode_function(PnmFormat.PPM_TEXT, PnmFormat.PPM_BINARY)
+            case "pgp":
+                algorithm = mode_function(PnmFormat.PGM_TEXT, PnmFormat.PGM_BINARY)
+            case _:
+                raise ValueError("File extension does not match")
+        arr,max_value = self.view.get_extracted_data_from_pixmap()
 
-        PnmImporter.export_file(filename)
-
-
-
+        PnmImporter.export_file(filename, algorithm, arr, max_value)
 
     def export_as(self):
         pass
 
-    def import_file(self,filename: str):
-        pixels, width,height,max_rgb_value = PnmImporter.get_pixels_and_max_value_from_file(filename)
-        self.view.draw_image(pixels,width,height,max_rgb_value)
+    def import_file(self, filename: str):
+        pixels, width, height, max_rgb_value = PnmImporter.get_pixels_and_max_value_from_file(filename)
+        self.view.draw_image(pixels, width, height, max_rgb_value)
 
-    def add_image(self,image):
-        image = Image(self.current_pen,Point(0,0),None,image)
+    def add_image(self, image):
+        image = Image(self.current_pen, Point(0, 0), None, image)
         self.model.add_shape(image)
         self.view.refresh()

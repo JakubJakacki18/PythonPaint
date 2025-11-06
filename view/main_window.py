@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtGui import QImage
 
@@ -77,6 +78,23 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.canvasPlaceholder.render(pixmap)
         pixmap.save(filename)
 
+    def get_extracted_data_from_pixmap(self):
+        pixmap = QtGui.QPixmap(self.canvasPlaceholder.size())
+        self.canvasPlaceholder.render(pixmap)
+        image = pixmap.toImage()
+
+        width = image.width()
+        height = image.height()
+
+        ptr = image.bits()
+        ptr.setsize(width * height * 3)
+        arr = np.frombuffer(ptr, dtype=np.uint8).copy().reshape((height, width, 3))
+        max_value = 255
+
+        return arr, max_value
+
+
+
     def set_color_button(self,r:int,g:int,b:int):
         q_color = QtGui.QColor(r,g,b)
         self.colorButton.setStyleSheet(f"background-color: {q_color.name()};")
@@ -86,14 +104,14 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Eksportuj rysunek jako",
             "",
-            "PPM text(*.ppm);;BPM text(*.bpm);;BGP text(*.bgp);;PPM binary(*.ppm);;BPM binary(*.bpm);;BGP binary(*.bgp)"
+            "PPM text(*.ppm);;PBM text(*.pbm);;PGP text(*.pgp);;PPM binary(*.ppm);;PBM binary(*.pbm);;PGP binary(*.pgp)"
         )
         if not filename:
             return
         self.presenter.export_file(filename,selected_filter)
 
     def import_file(self):
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;BPM (*.bpm);;BGP (*.bgp)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;PBM (*.pbm);;PGP (*.pgp)")
         self.presenter.import_file(filename)
 
     def draw_image(self,pixels,width,height,max_rgb_value):
