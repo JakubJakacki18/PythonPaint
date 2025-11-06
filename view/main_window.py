@@ -86,19 +86,11 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Eksportuj rysunek jako",
             "",
-            "PPM (*.ppm);;BPM (*.bpm);;BGP (*.bgp)"
+            "PPM text(*.ppm);;BPM text(*.bpm);;BGP text(*.bgp);;PPM binary(*.ppm);;BPM binary(*.bpm);;BGP binary(*.bgp)"
         )
         if not filename:
             return
-        base, ext = os.path.splitext(filename)
-        if not ext:
-            if "bpm" in selected_filter.lower():
-                filename += ".bpm"
-            elif "ppm" in selected_filter.lower():
-                filename += ".ppm"
-            elif "bgp" in selected_filter.lower():
-                filename += ".bgp"
-        self.presenter.export_file(filename,ext)
+        self.presenter.export_file(filename,selected_filter)
 
     def import_file(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;BPM (*.bpm);;BGP (*.bgp)")

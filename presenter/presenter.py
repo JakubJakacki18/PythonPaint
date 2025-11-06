@@ -1,4 +1,5 @@
 import copy
+import os
 from unittest import case
 
 from PyQt6.QtCore import Qt
@@ -125,8 +126,44 @@ class Presenter:
             self.current_pen = Pen((color.r,color.g,color.b),self.width)
             self.view.set_color_button(color.r,color.g,color.b)
 
-    def export_file(self, filename, ext):
-        pass
+    def export_file(self, filename, selected_filter):
+        base, ext = os.path.splitext(filename)
+        selected_filter_lower = selected_filter.lower()
+
+        if "bpm" in selected_filter_lower:
+            new_ext = "bpm"
+        elif "ppm" in selected_filter_lower:
+            new_ext = "ppm"
+        elif "bgp" in selected_filter_lower:
+            new_ext = "bgp"
+        else:
+            raise ValueError("Filter was not recognized")
+
+        if ext is None:
+            ext= new_ext
+            filename+="."+ext
+        if ext is not None and new_ext != ext:
+            raise ValueError("File extension does not match")
+
+
+        if "text" in selected_filter_lower:
+            mode = "text"
+        elif "binary" in selected_filter_lower:
+            mode = "binary"
+        else:
+            raise ValueError("Nie przekazano trybu exportu")
+
+        match ext:
+            case "bpm":
+
+            case "ppm":
+                pass
+            case "bgp":
+
+        PnmImporter.export_file(filename)
+
+
+
 
     def export_as(self):
         pass

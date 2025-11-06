@@ -49,7 +49,3 @@ class CanvasWidget(QtWidgets.QWidget):
         print("Znak:", event.text())
         if self.presenter:
             self.presenter.handle_key_press(event)
-
-    def set_image(self, image: QtGui.QImage):
-        self.image = image
-        self.update()
