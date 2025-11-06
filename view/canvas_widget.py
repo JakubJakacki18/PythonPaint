@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtCore import Qt, QPointF, QRect
 
+from model.image import Image
 from model.point import Point
 from utils.draw_map import DRAW_MAP
 
@@ -12,7 +13,6 @@ class CanvasWidget(QtWidgets.QWidget):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
         self.presenter = None
-        self.image = None
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         pos = Point(event.position().x(), event.position().y())
@@ -32,8 +32,6 @@ class CanvasWidget(QtWidgets.QWidget):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.fillRect(self.rect(), QtGui.QColor('white'))
-        if self.image:
-            painter.drawImage(0, 0, self.image)
         if not self.presenter:
             return
         for shape in self.presenter.get_shapes():

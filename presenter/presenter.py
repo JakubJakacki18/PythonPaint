@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QDialog
 from model.color_model import ColorModel
 from model.ellipse import Ellipse
 from model.free_draw import FreeDraw
+from model.image import Image
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
@@ -46,7 +47,7 @@ class Presenter:
         self.start_pos = clicked_point
         if self.tool in self.shape_factories:
             factory = self.shape_factories[self.tool]
-            self.drawing_shape = factory(copy.deepcopy(self.current_pen), clicked_point)
+            self.drawing_shape = factory(self.current_pen, clicked_point)
             self.model.add_shape(self.drawing_shape)
             self.view.refresh()
             return
@@ -125,11 +126,16 @@ class Presenter:
             self.view.set_color_button(color.r,color.g,color.b)
 
     def export_file(self, filename, ext):
-
         pass
+
     def export_as(self):
         pass
 
     def import_file(self,filename: str):
         pixels, width,height,max_rgb_value = PnmImporter.get_pixels_and_max_value_from_file(filename)
         self.view.draw_image(pixels,width,height,max_rgb_value)
+
+    def add_image(self,image):
+        image = Image(self.current_pen,Point(0,0),None,image)
+        self.model.add_shape(image)
+        self.view.refresh()

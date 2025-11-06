@@ -1,8 +1,9 @@
-from PyQt6.QtCore import Qt, QPointF, QRectF
+from PyQt6.QtCore import Qt, QPointF, QRectF, QPoint
 from PyQt6.QtGui import QPen, QColor, QPainter, QPolygonF, QPainterPath, QFont
 
 from model.ellipse import Ellipse
 from model.free_draw import FreeDraw
+from model.image import Image
 from model.line import Line
 from model.pen import Pen
 from model.rectangle import Rectangle
@@ -82,3 +83,7 @@ class ShapeRenderer:
                       Qt.PenCapStyle.RoundCap,
                       Qt.PenJoinStyle.RoundJoin)
         return qt_pen
+
+    @staticmethod
+    def draw_image(painter: QPainter, pen:Pen, image:Image):
+        painter.drawImage(QPoint(int(image.p1.x), int(image.p1.y)),image.image)

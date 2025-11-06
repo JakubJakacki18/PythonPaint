@@ -1,5 +1,6 @@
 from model.ellipse import Ellipse
 from model.free_draw import FreeDraw
+from model.image import Image
 from model.line import Line
 from model.rectangle import Rectangle
 from model.text import Text
@@ -13,5 +14,6 @@ DRAW_MAP = {
     Line: ShapeRenderer.draw_line,
     FreeDraw : ShapeRenderer.draw_free,
     Text: ShapeRenderer.draw_text,
+    Image: ShapeRenderer.draw_image,
 
 }

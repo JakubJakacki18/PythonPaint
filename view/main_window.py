@@ -86,7 +86,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Eksportuj rysunek jako",
             "",
-            "BPM (*.bpm);;PPM (*.ppm);;BGP (*.bgp)"
+            "PPM (*.ppm);;BPM (*.bpm);;BGP (*.bgp)"
         )
         if not filename:
             return
@@ -101,9 +101,10 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.presenter.export_file(filename,ext)
 
     def import_file(self):
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","BPM (*.bpm);;PPM (*.ppm);;BGP (*.bgp)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;BPM (*.bpm);;BGP (*.bgp)")
         self.presenter.import_file(filename)
 
     def draw_image(self,pixels,width,height,max_rgb_value):
         image = QImage(pixels,width,height,3 * width, QImage.Format.Format_RGB888)
-        self.canvasPlaceholder.set_image(image)
+        self.presenter.add_image(image)
+        # self.canvasPlaceholder.set_image(image)
