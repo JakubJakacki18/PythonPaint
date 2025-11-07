@@ -8,6 +8,7 @@ from typing import List, Tuple, Union
 
 import numpy as np
 
+
 def measure_time(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -16,7 +17,9 @@ def measure_time(func):
         end = time.perf_counter()
         print(f"⏱️ Funkcja {func.__name__} wykonana w {end - start:.4f} s")
         return result
+
     return wrapper
+
 
 class PnmFormat(Enum):
     PBM_TEXT = "P1"
@@ -26,42 +29,57 @@ class PnmFormat(Enum):
     PGM_BINARY = "P5"
     PPM_BINARY = "P6"
 
+
 class PnmImporter:
     @staticmethod
     @measure_time
-    def export_file(filename : str, algorithm : PnmFormat, arr, max_value : int):
+    def export_file(filename: str, algorithm: PnmFormat, arr, max_value: int):
         with open(filename, "w") as f:
             f.write((algorithm.value + "\n"))
             height, width, _ = arr.shape
-            f.write((str(width)+" "+str(height)+ "\n"))
-
-
+            f.write((str(width) + " " + str(height) + "\n"))
 
         match algorithm:
             case PnmFormat.PBM_TEXT:
-                PnmImporter._append_image_text_data_to_file(arr, filename, PnmImporter._binarization_of_image)
-            case PnmFormat.PBM_BINARY:
-                pass
+                PnmImporter._append_image_text_data_to_file(
+                    arr, filename, PnmImporter._binarization_of_image
+                )
             case PnmFormat.PPM_TEXT:
-                PnmImporter._append_image_text_data_to_file(arr, filename, None, max_value)
-            # case PnmFormat.PPM_BINARY:
-            #
-
+                PnmImporter._append_image_text_data_to_file(
+                    arr, filename, None, max_value
+                )
             case PnmFormat.PGM_TEXT:
-                PnmImporter._append_image_text_data_to_file(arr, filename, PnmImporter._grayscale_of_image, max_value)
-
-            # case PnmFormat.PGM_BINARY:
+                PnmImporter._append_image_text_data_to_file(
+                    arr, filename, PnmImporter._grayscale_of_image, max_value
+                )
+            case PnmFormat.PBM_BINARY:
+                PnmImporter._append_image_binary_data_to_file(
+                    arr, filename, PnmImporter._binarization_of_image
+                )
+            case PnmFormat.PPM_BINARY:
+                PnmImporter._append_image_binary_data_to_file(
+                    arr, filename, None, max_value
+                )
+            case PnmFormat.PGM_BINARY:
+                PnmImporter._append_image_binary_data_to_file(
+                    arr, filename, PnmImporter._grayscale_of_image, max_value
+                )
 
         pass
-    @staticmethod
-    def _append_image_text_data_to_file(arr:np.ndarray, filename : str, preparation_func : Callable[[np.ndarray],np.ndarray]= None, max_value=0):
 
+    @staticmethod
+    def _append_image_text_data_to_file(
+        arr: np.ndarray,
+        filename: str,
+        preparation_func: Callable[[np.ndarray], np.ndarray] = None,
+        max_value=0,
+    ):
         with open(filename, "a") as f:
             if max_value > 0:
                 f.write(str(max_value) + "\n")
-            if preparation_func is not None:    
+            if preparation_func is not None:
                 new_arr = preparation_func(arr)
-                map_func = lambda array_row: str(array_row[0])
+                map_func = lambda array_row: str(array_row)
                 step = 17
             else:
                 new_arr = arr
@@ -69,37 +87,72 @@ class PnmImporter:
                 step = 5
             for row in new_arr:
                 for i in range(0, len(row), step):
-                    chunk = row[i:i + step]
+                    chunk = row[i : i + step]
                     f.write(" ".join(map(map_func, chunk)) + "\n")
+
     @staticmethod
-    def _binarization_of_image(arr:np.ndarray, threshold : int = 127) -> np.ndarray:
+    def _append_image_binary_data_to_file(
+        arr: np.ndarray,
+        filename: str,
+        preparation_func: Callable[[np.ndarray], np.ndarray] = None,
+        max_value=0,
+    ):
+        with open(filename, "ab") as f:
+            if max_value > 0:
+                f.write(f"{max_value}\n".encode("ascii"))
+            if preparation_func is not None:
+                new_arr = preparation_func(arr)
+            else:
+                new_arr = arr
+
+            new_arr = np.asarray(new_arr, dtype=np.uint8)
+
+            if len(new_arr.shape) == 2:
+                f.write(new_arr.tobytes())
+            elif len(new_arr.shape) == 3 and new_arr.shape[2] == 3:
+                f.write(new_arr.reshape(-1, 3).tobytes())
+            else:
+                raise ValueError(f"Unsupported array shape: {new_arr.shape}")
+
+    @staticmethod
+    def _binarization_of_image(arr: np.ndarray, threshold: int = 127) -> np.ndarray:
         gray_arr = PnmImporter._grayscale_of_image(arr)
         binarized_arr = np.where(gray_arr >= threshold, 0, 1).astype(np.uint8)
         return binarized_arr
+
     @staticmethod
     def _grayscale_of_image(arr: np.ndarray) -> np.ndarray:
-        gray = (0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]).astype(np.uint8)
-        return np.stack((gray, gray, gray), axis=-1)
+        gray = (
+            0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]
+        ).astype(np.uint8)
+        return gray
+
     @staticmethod
     @measure_time
-    def get_pixels_and_max_value_from_file(filename) -> Tuple[Union[List[List[int]], List[List[List[int]]]],int]:
+    def get_pixels_and_max_value_from_file(
+        filename,
+    ) -> Tuple[Union[List[List[int]], List[List[List[int]]]], int]:
         print(f"Trwa praca nad plikiem {filename}")
-        with open(filename, 'rb') as f:
-            matched_header, width,height,max_value = PnmImporter._extract_header(f)
-            print(f'width={width} height={height}')
-            print(f'matched_header={matched_header.value} max_value={max_value}')
+        with open(filename, "rb") as f:
+            matched_header, width, height, max_value = PnmImporter._extract_header(f)
+            print(f"width={width} height={height}")
+            print(f"matched_header={matched_header.value} max_value={max_value}")
             # if matched_header in (PnmFormat.PPM_TEXT, PnmFormat.PGM_TEXT,PnmFormat.PPM_BINARY, PnmFormat.PGM_BINARY):
-                # try:
-                #
-                #     max_value = PnmImporter._get_first_value(f, line)
-                # except ValueError:
-                #     max_value=255
+            # try:
+            #
+            #     max_value = PnmImporter._get_first_value(f, line)
+            # except ValueError:
+            #     max_value=255
             match matched_header:
                 case PnmFormat.PPM_TEXT | PnmFormat.PGM_TEXT:
                     # pixels = list(PnmImporter._from_rgb_elements_to_3d_list(PnmImporter._iter_rgb(PnmImporter._pnm_text_generator(f)),width))
                     pixels = bytes(PnmImporter._pnm_text_generator(f))
                 case PnmFormat.PBM_BINARY:
-                    pixels = list(PnmImporter._from_rgb_elements_to_3d_list(PnmImporter._pnm_text_generator(f),width))
+                    pixels = list(
+                        PnmImporter._from_rgb_elements_to_3d_list(
+                            PnmImporter._pnm_text_generator(f), width
+                        )
+                    )
 
                     # for line in f:
                     #     tokens = line.strip().split()
@@ -132,7 +185,6 @@ class PnmImporter:
                     arr = np.frombuffer(pixel_data, dtype=np.uint8)
                     pixels = arr.reshape((height, width))
 
-
                 # case PnmFormat.PGM_BINARY:
                 #     chunk_size_bytes = 4096
                 #     while chunk := f.read(chunk_size_bytes):
@@ -150,7 +202,6 @@ class PnmImporter:
                     # async def read_binary_data(f,chunk_size_bytes):
                     #     if chunk := f.read(chunk_size_bytes):
 
-
                     # while chunk := f.read(chunk_size_bytes):
                     #     tokens = chunk.strip().split()
                     #     for token in tokens:
@@ -158,11 +209,9 @@ class PnmImporter:
                     #             break
                     #         pixels.append(int(token))
 
-
-
-                        # for i in range(0, len(chunk), 3):
-                        #     r, g, b = chunk[i:i + 3]
-                        #     pixels.extend([r, g, b])
+                    # for i in range(0, len(chunk), 3):
+                    #     r, g, b = chunk[i:i + 3]
+                    #     pixels.extend([r, g, b])
                 case _:
                     pass
 
@@ -170,8 +219,7 @@ class PnmImporter:
             # print("Ilości pikseli, iloczyny", sum(len(row) for row in pixels), width * height, width * height * 3)
             # assert sum(len(row) for row in pixels) in (width * height,width*height*3), "Len of pixels does not match width and height"
             print("✅ Zwracam dane z get_pixels_and_max_value_from_file")
-            return pixels, width,height, max_value
-
+            return pixels, width, height, max_value
 
     # @staticmethod
     # def _extract_header(f, line,with_max_value)-> (int,int):
@@ -196,7 +244,7 @@ class PnmImporter:
     #         line = f.readline()
     #     return None
     @staticmethod
-    def _from_rgb_elements_to_3d_list(generator : Generator,width:int):
+    def _from_rgb_elements_to_3d_list(generator: Generator, width: int):
         it = iter(generator)
         while True:
             try:
@@ -204,9 +252,8 @@ class PnmImporter:
             except StopIteration:
                 break
 
-
     @staticmethod
-    def _iter_rgb(generator : Generator):
+    def _iter_rgb(generator: Generator):
         it = iter(generator)
         while True:
             try:
@@ -216,7 +263,7 @@ class PnmImporter:
 
     @staticmethod
     def _find_nth(text: bytes, number: bytes, n: int) -> int:
-        pattern = rb'(?<!\d)' + re.escape(number) + rb'(?!\d)'
+        pattern = rb"(?<!\d)" + re.escape(number) + rb"(?!\d)"
         matches = re.finditer(pattern, text)
         for i, match in enumerate(matches, start=1):
             if i == n:
@@ -251,14 +298,14 @@ class PnmImporter:
                 if start is None:
                     start = i
             if start is not None:
-                buf = data[start:len(data)]
+                buf = data[start : len(data)]
             else:
                 buf = b""
         if buf:
             yield int(buf.decode("ascii", errors="strict"))
 
     @staticmethod
-    def _extract_header(f) -> tuple[PnmFormat,int, int, int] | None:
+    def _extract_header(f) -> tuple[PnmFormat, int, int, int] | None:
         matched_header = None
         pos = f.tell()
         index_after_header = 0
@@ -266,19 +313,26 @@ class PnmImporter:
         while matched_header is None and (line := f.readline()):
             stripped = line.strip()
             matched_header = next(
-                (pnm_format for pnm_format in PnmFormat if stripped.startswith(pnm_format.value.encode())),
-                None
+                (
+                    pnm_format
+                    for pnm_format in PnmFormat
+                    if stripped.startswith(pnm_format.value.encode())
+                ),
+                None,
             )
             if matched_header is not None:
-                index_after_header = line.find(matched_header.value.encode())+2
+                index_after_header = line.find(matched_header.value.encode()) + 2
                 pos = last_pos + index_after_header
 
             last_pos = f.tell()
 
-
         if matched_header is None:
-            raise Exception(f'Could not find header of format')
-        line = line[index_after_header:] if not len(line.strip().split()) in (0, 1) else f.readline()
+            raise Exception(f"Could not find header of format")
+        line = (
+            line[index_after_header:]
+            if not len(line.strip().split()) in (0, 1)
+            else f.readline()
+        )
         header_data = []
         with_max_value = matched_header in (
             PnmFormat.PGM_TEXT,
@@ -289,14 +343,16 @@ class PnmImporter:
         needed = 3 if with_max_value else 2
         while len(header_data) < needed:
             tokens = line.strip().split()
-            token_occurrence = {key : 0 for key in tokens}
+            token_occurrence = {key: 0 for key in tokens}
             for token in tokens:
                 token_occurrence[token] += 1
                 if token.startswith(b"#"):
                     break
                 header_data.append(int(token))
 
-                index_after_last_value = PnmImporter._find_nth(line, token, token_occurrence[token])
+                index_after_last_value = PnmImporter._find_nth(
+                    line, token, token_occurrence[token]
+                )
                 if len(header_data) == needed:
                     pos = last_pos + index_after_last_value
                     f.seek(pos)
@@ -310,8 +366,8 @@ class PnmImporter:
             last_pos = f.tell()
             line = f.readline()
 
-
         return None
+
     # @staticmethod
     # def _get_first_value(f, line)-> int:
     #     x = None
@@ -325,7 +381,7 @@ class PnmImporter:
     #         line[0] = f.readline()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pnm_importer = PnmImporter()
     os.chdir("tests")
     list_of_files = os.listdir(".")
