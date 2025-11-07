@@ -81,14 +81,25 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def get_extracted_data_from_pixmap(self):
         pixmap = QtGui.QPixmap(self.canvasPlaceholder.size())
         self.canvasPlaceholder.render(pixmap)
-        image = pixmap.toImage()
+        image = pixmap.toImage().convertToFormat(QtGui.QImage.Format.Format_RGB888)
 
         width = image.width()
         height = image.height()
+        bytes_per_line = image.bytesPerLine()
 
         ptr = image.bits()
-        ptr.setsize(width * height * 3)
-        arr = np.frombuffer(ptr, dtype=np.uint8).copy().reshape((height, width, 3))
+        ptr.setsize(bytes_per_line * height)
+
+        buffer = np.frombuffer(ptr, dtype=np.uint8).reshape((height, bytes_per_line))
+
+        if image.format() in (
+                QtGui.QImage.Format.Format_RGB888,
+                QtGui.QImage.Format.Format_BGR888
+        ):
+            channels = 3
+            arr = buffer[:, :width * channels].reshape((height, width, channels)).copy()
+        else:
+            raise ValueError(f"Invalid pixmap format: {image.format()}")
         max_value = 255
 
         return arr, max_value
@@ -104,14 +115,14 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Eksportuj rysunek jako",
             "",
-            "PPM text(*.ppm);;PBM text(*.pbm);;PGP text(*.pgp);;PPM binary(*.ppm);;PBM binary(*.pbm);;PGP binary(*.pgp)"
+            "PPM text(*.ppm);;PBM text(*.pbm);;PGM text(*.pgm);;PPM binary(*.ppm);;PBM binary(*.pbm);;PGM binary(*.pgm)"
         )
         if not filename:
             return
         self.presenter.export_file(filename,selected_filter)
 
     def import_file(self):
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;PBM (*.pbm);;PGP (*.pgp)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;PBM (*.pbm);;PGM (*.pgm)")
         self.presenter.import_file(filename)
 
     def draw_image(self,pixels,width,height,max_rgb_value):

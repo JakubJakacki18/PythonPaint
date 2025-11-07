@@ -1,8 +1,7 @@
 import os
 import re
-import sys
 import time
-from collections.abc import Generator
+from collections.abc import Generator, Callable
 from enum import Enum
 from functools import wraps
 from typing import List, Tuple, Union
@@ -31,11 +30,56 @@ class PnmImporter:
     @staticmethod
     @measure_time
     def export_file(filename : str, algorithm : PnmFormat, arr, max_value : int):
-        with open(filename, "wb") as f:
-            f.write(algorithm.value.encode("utf-8"))
+        with open(filename, "w") as f:
+            f.write((algorithm.value + "\n"))
+            height, width, _ = arr.shape
+            f.write((str(width)+" "+str(height)+ "\n"))
 
+
+
+        match algorithm:
+            case PnmFormat.PBM_TEXT:
+                PnmImporter._append_image_text_data_to_file(arr, filename, PnmImporter._binarization_of_image)
+            case PnmFormat.PBM_BINARY:
+                pass
+            case PnmFormat.PPM_TEXT:
+                PnmImporter._append_image_text_data_to_file(arr, filename, None, max_value)
+            # case PnmFormat.PPM_BINARY:
+            #
+
+            case PnmFormat.PGM_TEXT:
+                PnmImporter._append_image_text_data_to_file(arr, filename, PnmImporter._grayscale_of_image, max_value)
+
+            # case PnmFormat.PGM_BINARY:
 
         pass
+    @staticmethod
+    def _append_image_text_data_to_file(arr:np.ndarray, filename : str, preparation_func : Callable[[np.ndarray],np.ndarray]= None, max_value=0):
+
+        with open(filename, "a") as f:
+            if max_value > 0:
+                f.write(str(max_value) + "\n")
+            if preparation_func is not None:    
+                new_arr = preparation_func(arr)
+                map_func = lambda array_row: str(array_row[0])
+                step = 17
+            else:
+                new_arr = arr
+                map_func = lambda array_row: " ".join(map(str, array_row))
+                step = 5
+            for row in new_arr:
+                for i in range(0, len(row), step):
+                    chunk = row[i:i + step]
+                    f.write(" ".join(map(map_func, chunk)) + "\n")
+    @staticmethod
+    def _binarization_of_image(arr:np.ndarray, threshold : int = 127) -> np.ndarray:
+        gray_arr = PnmImporter._grayscale_of_image(arr)
+        binarized_arr = np.where(gray_arr >= threshold, 0, 1).astype(np.uint8)
+        return binarized_arr
+    @staticmethod
+    def _grayscale_of_image(arr: np.ndarray) -> np.ndarray:
+        gray = (0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]).astype(np.uint8)
+        return np.stack((gray, gray, gray), axis=-1)
     @staticmethod
     @measure_time
     def get_pixels_and_max_value_from_file(filename) -> Tuple[Union[List[List[int]], List[List[List[int]]]],int]:

@@ -129,17 +129,17 @@ class Presenter:
         selected_filter_lower = selected_filter.lower()
 
         if "pbm" in selected_filter_lower:
-            new_ext = "pbm"
+            new_ext = ".pbm"
         elif "ppm" in selected_filter_lower:
-            new_ext = "ppm"
-        elif "pgp" in selected_filter_lower:
-            new_ext = "pgp"
+            new_ext = ".ppm"
+        elif "pgm" in selected_filter_lower:
+            new_ext = ".pgm"
         else:
             raise ValueError("Filter was not recognized")
 
         if not ext:
             ext = new_ext
-            filename += "." + ext
+            filename += ext
         elif new_ext != ext:
             raise ValueError("File extension does not match")
 
@@ -151,11 +151,11 @@ class Presenter:
             raise ValueError("Nie przekazano trybu exportu")
         mode_function = lambda p_text, p_binary: p_text if mode == "text" else p_binary
         match ext:
-            case "pbm":
+            case ".pbm":
                 algorithm = mode_function(PnmFormat.PBM_TEXT, PnmFormat.PBM_BINARY)
-            case "ppm":
+            case ".ppm":
                 algorithm = mode_function(PnmFormat.PPM_TEXT, PnmFormat.PPM_BINARY)
-            case "pgp":
+            case ".pgm":
                 algorithm = mode_function(PnmFormat.PGM_TEXT, PnmFormat.PGM_BINARY)
             case _:
                 raise ValueError("File extension does not match")
