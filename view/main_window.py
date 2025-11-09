@@ -6,6 +6,8 @@ from PyQt6.QtGui import QImage
 
 from utils.tools import Tools
 from view.main_window_ui import Ui_MainWindow
+
+
 class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, presenter):
         super().__init__()
@@ -21,25 +23,30 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.freeDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.FREE_DRAW))
         self.lineDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.LINE))
-        self.triangleDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.TRIANGLE))
-        self.ellipseDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.ELLIPSE))
-        self.rectangleDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.RECTANGLE))
+        self.triangleDrawButton.clicked.connect(
+            lambda: presenter.set_tool(Tools.TRIANGLE)
+        )
+        self.ellipseDrawButton.clicked.connect(
+            lambda: presenter.set_tool(Tools.ELLIPSE)
+        )
+        self.rectangleDrawButton.clicked.connect(
+            lambda: presenter.set_tool(Tools.RECTANGLE)
+        )
 
         self.actionSave.triggered.connect(lambda: self.save_file())
-        self.actionOpen.triggered.connect(lambda: presenter.open())
+        self.actionOpen.triggered.connect(lambda: self.open_file())
         self.actionClose.triggered.connect(lambda: presenter.close())
 
         self.actionExport.triggered.connect(lambda: self.export_file_as())
         self.actionImport.triggered.connect(lambda: self.import_file())
 
         self.colorButton.clicked.connect(lambda: presenter.set_color())
-        self.set_color_button(0,0,0)
-
+        self.set_color_button(0, 0, 0)
 
     def refresh(self):
         self.canvasPlaceholder.update()
 
-    def toggle_secondary_bar_frame(self, is_visible : bool):
+    def toggle_secondary_bar_frame(self, is_visible: bool):
         self.secondaryBarFrame.setVisible(is_visible)
 
     def toggle_move_button(self):
@@ -59,7 +66,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Zapisz rysunek jako obraz",
             "",
-            "PNG (*.png);;JPEG (*.jpg);;BMP (*.bmp)"
+            "PNG (*.png);;JPEG (*.jpg);;BMP (*.bmp)",
         )
         if not filename:
             return
@@ -93,21 +100,21 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         buffer = np.frombuffer(ptr, dtype=np.uint8).reshape((height, bytes_per_line))
 
         if image.format() in (
-                QtGui.QImage.Format.Format_RGB888,
-                QtGui.QImage.Format.Format_BGR888
+            QtGui.QImage.Format.Format_RGB888,
+            QtGui.QImage.Format.Format_BGR888,
         ):
             channels = 3
-            arr = buffer[:, :width * channels].reshape((height, width, channels)).copy()
+            arr = (
+                buffer[:, : width * channels].reshape((height, width, channels)).copy()
+            )
         else:
             raise ValueError(f"Invalid pixmap format: {image.format()}")
         max_value = 255
 
         return arr, max_value
 
-
-
-    def set_color_button(self,r:int,g:int,b:int):
-        q_color = QtGui.QColor(r,g,b)
+    def set_color_button(self, r: int, g: int, b: int):
+        q_color = QtGui.QColor(r, g, b)
         self.colorButton.setStyleSheet(f"background-color: {q_color.name()};")
 
     def export_file_as(self):
@@ -115,17 +122,23 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             self,
             "Eksportuj rysunek jako",
             "",
-            "PPM text(*.ppm);;PBM text(*.pbm);;PGM text(*.pgm);;PPM binary(*.ppm);;PBM binary(*.pbm);;PGM binary(*.pgm)"
+            "PPM text(*.ppm);;PBM text(*.pbm);;PGM text(*.pgm);;PPM binary(*.ppm);;PBM binary(*.pbm);;PGM binary(*.pgm)",
         )
         if not filename:
             return
-        self.presenter.export_file(filename,selected_filter)
+        self.presenter.export_file(filename, selected_filter)
 
     def import_file(self):
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Importuj rysunek jako","","PPM (*.ppm);;PBM (*.pbm);;PGM (*.pgm)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Importuj rysunek jako", "", "PPM (*.ppm);;PBM (*.pbm);;PGM (*.pgm)"
+        )
         self.presenter.import_file(filename)
 
-    def draw_image(self,pixels,width,height,max_rgb_value):
-        image = QImage(pixels,width,height,3 * width, QImage.Format.Format_RGB888)
+    def open_file(self):
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Otwórz obraz", "")
+        self.presenter.open_file(filename)
+
+    def draw_image(self, pixels, width, height, max_rgb_value):
+        image = QImage(pixels, width, height, 3 * width, QImage.Format.Format_RGB888)
         self.presenter.add_image(image)
         # self.canvasPlaceholder.set_image(image)

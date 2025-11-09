@@ -13,7 +13,13 @@ from model.image import Image
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
-from utils.commands import InvokerQueue, ImportCommand, ExportCommand, AsyncLoopThread
+from utils.commands import (
+    InvokerQueue,
+    ImportCommand,
+    ExportCommand,
+    AsyncLoopThread,
+    OpenFileCommand,
+)
 from utils.pnm_importer import PnmImporter, PnmFormat
 from .dialog_presenter import DialogPresenter
 from view.color_dialog import ColorDialog
@@ -173,8 +179,10 @@ class Presenter:
             )
         )
 
-    def export_as(self):
-        pass
+    def open_file(self, filename: str):
+        self.loop.run_coroutine(
+            self.command_queue.add_command(OpenFileCommand(filename, self))
+        )
 
     def import_file(self, filename: str):
         self.loop.run_coroutine(

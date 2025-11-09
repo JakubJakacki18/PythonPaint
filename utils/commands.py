@@ -4,6 +4,7 @@ from abc import abstractmethod, ABC
 
 import numpy as np
 
+from PIL import Image
 from utils.pnm_format import PnmFormat
 from utils.pnm_importer import PnmImporter
 
@@ -16,6 +17,19 @@ class Command(ABC):
     @abstractmethod
     async def execute(self) -> None:
         pass
+
+
+class OpenFileCommand(Command):
+    def __init__(self, filename: str, presenter_receiver) -> None:
+        self._filename = filename
+        self._presenter_receiver = presenter_receiver
+
+    async def execute(self) -> None:
+        img = Image.open(self._filename).convert("RGB")
+        width, height = img.size
+        pixels = img.tobytes()
+        max_rgb_value = 255
+        self._presenter_receiver.view.draw_image(pixels, width, height, max_rgb_value)
 
 
 class ImportCommand(Command):
