@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import os
 from unittest import case
@@ -12,6 +13,7 @@ from model.image import Image
 from model.text import Text
 from model.triangle import Triangle
 from model.line import Line
+from utils.commands import InvokerQueue, ImportCommand, ExportCommand, AsyncLoopThread
 from utils.pnm_importer import PnmImporter, PnmFormat
 from .dialog_presenter import DialogPresenter
 from view.color_dialog import ColorDialog
@@ -36,6 +38,8 @@ class Presenter:
         self.dragging = False
         self.selected_shape = None
         self.last_mouse_pos = None
+        self.command_queue = InvokerQueue()
+        self.loop = AsyncLoopThread()
 
     def set_tool(self, tool: Tools):
         self.tool = tool
@@ -84,8 +88,10 @@ class Presenter:
                 self.drawing_shape.resize_by(current_point)
         if self.selected_shape is not None and self.dragging:
             if self.tool == Tools.SELECT:
-                translation_vector = Point(current_point.x - self.last_mouse_pos.x,
-                                           current_point.y - self.last_mouse_pos.y)
+                translation_vector = Point(
+                    current_point.x - self.last_mouse_pos.x,
+                    current_point.y - self.last_mouse_pos.y,
+                )
                 self.selected_shape.move_by(translation_vector)
             elif self.tool == Tools.SCALE:
                 self.selected_shape.resize_by(current_point)
@@ -159,16 +165,21 @@ class Presenter:
                 algorithm = mode_function(PnmFormat.PGM_TEXT, PnmFormat.PGM_BINARY)
             case _:
                 raise ValueError("File extension does not match")
-        arr,max_value = self.view.get_extracted_data_from_pixmap()
+        arr, max_value = self.view.get_extracted_data_from_pixmap()
 
-        PnmImporter.export_file(filename, algorithm, arr, max_value)
+        self.loop.run_coroutine(
+            self.command_queue.add_command(
+                ExportCommand(filename, algorithm, arr, max_value)
+            )
+        )
 
     def export_as(self):
         pass
 
     def import_file(self, filename: str):
-        pixels, width, height, max_rgb_value = PnmImporter.get_pixels_and_max_value_from_file(filename)
-        self.view.draw_image(pixels, width, height, max_rgb_value)
+        self.loop.run_coroutine(
+            self.command_queue.add_command(ImportCommand(filename, self))
+        )
 
     def add_image(self, image):
         image = Image(self.current_pen, Point(0, 0), None, image)
