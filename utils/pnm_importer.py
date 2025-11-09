@@ -102,6 +102,8 @@ class PnmImporter:
                 f.write(f"{max_value}\n".encode("ascii"))
             if preparation_func is not None:
                 new_arr = preparation_func(arr)
+                if preparation_func == PnmImporter._binarization_of_image:
+                    new_arr = np.packbits(new_arr, axis=1)
             else:
                 new_arr = arr
 
@@ -144,46 +146,64 @@ class PnmImporter:
             # except ValueError:
             #     max_value=255
             match matched_header:
-                case PnmFormat.PPM_TEXT | PnmFormat.PGM_TEXT:
+                case PnmFormat.PPM_TEXT:
                     # pixels = list(PnmImporter._from_rgb_elements_to_3d_list(PnmImporter._iter_rgb(PnmImporter._pnm_text_generator(f)),width))
                     pixels = bytes(PnmImporter._pnm_text_generator(f))
-                case PnmFormat.PBM_BINARY:
-                    pixels = list(
-                        PnmImporter._from_rgb_elements_to_3d_list(
-                            PnmImporter._pnm_text_generator(f), width
+                case PnmFormat.PGM_TEXT:
+                    pixels = bytes(
+                        PnmImporter._2d_array_iter(PnmImporter._pnm_text_generator(f))
+                    )
+                case PnmFormat.PBM_TEXT:
+                    pixels = bytes(
+                        PnmImporter._2d_array_iter(
+                            PnmImporter._binarized_array_to_8bit(
+                                PnmImporter._pnm_text_generator(f)
+                            )
                         )
                     )
 
-                    # for line in f:
-                    #     tokens = line.strip().split()
-                    #     for token in tokens:
-                    #         if token.startswith(b'#'):
-                    #             break
-                    #         pixels.append(int(token))
+                # for line in f:
+                #     tokens = line.strip().split()
+                #     for token in tokens:
+                #         if token.startswith(b'#'):
+                #             break
+                #         pixels.append(int(token))
 
-                    # def read_pnm_tokens():
-                    #     buffer_size = 1024
-                    #     while True:
-                    #         lines = [f.readline() for _ in range(buffer_size)]
-                    #         if not any(lines):
-                    #             break
-                    #         for line in lines:
-                    #             if not line:
-                    #                 continue
-                    #             tokens = line.strip().split()
-                    #             for token in tokens:
-                    #                 if token.startswith(b'#'):
-                    #                     break
-                    #                 yield int(token)
-                    #
-                    # pixels = list(read_pnm_tokens())
+                # def read_pnm_tokens():
+                #     buffer_size = 1024
+                #     while True:
+                #         lines = [f.readline() for _ in range(buffer_size)]
+                #         if not any(lines):
+                #             break
+                #         for line in lines:
+                #             if not line:
+                #                 continue
+                #             tokens = line.strip().split()
+                #             for token in tokens:
+                #                 if token.startswith(b'#'):
+                #                     break
+                #                 yield int(token)
+                #
+                # pixels = list(read_pnm_tokens())
 
-                    # pixels = np.fromiter(read_pnm_tokens(f), dtype=np.uint8)
+                # pixels = np.fromiter(read_pnm_tokens(f), dtype=np.uint8)
 
                 case PnmFormat.PBM_BINARY:
+                    packed_width = (width + 7) // 8
+                    pixel_data = f.read(height * packed_width)
+                    arr = np.frombuffer(pixel_data, dtype=np.uint8).reshape(
+                        (height, packed_width)
+                    )
+                    pixels = np.unpackbits(arr, axis=1)[:, :width]
+                    pixels = np.where(pixels == 0, 255, 0)
+                    pixels = np.repeat(pixels[:, :, np.newaxis], 3, axis=2).astype(
+                        dtype=np.uint8
+                    )
+                case PnmFormat.PGM_BINARY:
                     pixel_data = f.read(width * height)
                     arr = np.frombuffer(pixel_data, dtype=np.uint8)
                     pixels = arr.reshape((height, width))
+                    pixels = np.repeat(pixels[:, :, np.newaxis], 3, axis=2)
 
                 # case PnmFormat.PGM_BINARY:
                 #     chunk_size_bytes = 4096
@@ -194,10 +214,12 @@ class PnmImporter:
                 #                 break
                 #             pixels.append(int(token))
 
-                case PnmFormat.PPM_BINARY | PnmFormat.PGM_BINARY:
+                case PnmFormat.PPM_BINARY:
                     pixel_data = f.read(width * height * 3)
                     arr = np.frombuffer(pixel_data, dtype=np.uint8)
-                    pixels = arr.reshape((height, width, 3))
+                    old = arr.reshape((height, width, 3))
+                    pixels = old[:, :, [1, 2, 0]]
+                    pixels = pixels.tobytes()
                     # chunk_size_bytes = 4096 * 3
                     # async def read_binary_data(f,chunk_size_bytes):
                     #     if chunk := f.read(chunk_size_bytes):
@@ -243,6 +265,26 @@ class PnmImporter:
     #                         return width_and_height[0], width_and_height[1], width_and_height[2]
     #         line = f.readline()
     #     return None
+    @staticmethod
+    def _binarized_array_to_8bit(generator: Generator):
+        it = iter(generator)
+        while True:
+            try:
+                yield 255 if next(it) == 0 else 0
+            except StopIteration:
+                break
+
+    @staticmethod
+    def _2d_array_iter(generator: Generator):
+        it = iter(generator)
+        while True:
+            try:
+                value = next(it)
+                for i in range(3):
+                    yield value
+            except StopIteration:
+                break
+
     @staticmethod
     def _from_rgb_elements_to_3d_list(generator: Generator, width: int):
         it = iter(generator)
