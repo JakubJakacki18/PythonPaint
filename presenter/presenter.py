@@ -63,7 +63,7 @@ class Presenter:
             self.view.refresh()
             return
         match self.tool:
-            case Tools.SELECT | Tools.SCALE:
+            case Tools.MOVE | Tools.SCALE:
                 self.model.clear_selection()
                 shape = self.model.shape_at(clicked_point)
                 if shape:
@@ -73,12 +73,21 @@ class Presenter:
                     self.last_mouse_pos = clicked_point
                 else:
                     self.selected_shape = None
+            case Tools.SELECT:
+                shape = self.model.shape_at(clicked_point)
+                if shape:
+                    shape.selected = True
+                    self.selected_shape = shape
+                else:
+                    self.selected_shape = None
             case Tools.NONE | _:
                 print(f"Selected tool: {self.tool}")
                 return
         self.view.refresh()
 
     def handle_mouse_release(self):
+        if self.tool == Tools.SELECT:
+            return
         if self.tool != Tools.TEXT:
             self.drawing_shape = None
         self.start_pos = None
@@ -93,7 +102,7 @@ class Presenter:
             else:
                 self.drawing_shape.resize_by(current_point)
         if self.selected_shape is not None and self.dragging:
-            if self.tool == Tools.SELECT:
+            if self.tool == Tools.MOVE:
                 translation_vector = Point(
                     current_point.x - self.last_mouse_pos.x,
                     current_point.y - self.last_mouse_pos.y,
@@ -137,6 +146,8 @@ class Presenter:
             self.view.set_color_button(color.r, color.g, color.b)
 
     def export_file(self, filename, selected_filter):
+        if not filename:
+            return
         base, ext = os.path.splitext(filename)
         selected_filter_lower = selected_filter.lower()
 
@@ -180,11 +191,15 @@ class Presenter:
         )
 
     def open_file(self, filename: str):
+        if not filename:
+            return
         self.loop.run_coroutine(
             self.command_queue.add_command(OpenFileCommand(filename, self))
         )
 
     def import_file(self, filename: str):
+        if not filename:
+            return
         self.loop.run_coroutine(
             self.command_queue.add_command(ImportCommand(filename, self))
         )

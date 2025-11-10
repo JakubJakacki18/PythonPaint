@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-from PyQt6 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui, uic
 from PyQt6.QtGui import QImage
 
 from utils.tools import Tools
@@ -14,22 +14,41 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.presenter = presenter
         self.canvasPlaceholder.presenter = presenter
+
+        self.drawPanel = uic.loadUi("view/draw_panel_main_window.ui")
+        self.selectPanel = uic.loadUi("view/select_panel_main_window.ui")
+        self.currentPanel = None
+
+        self.toggle_secondary_bar_frame(self.drawPanel)
         self.navFrame.setFixedHeight(self.navFrame.sizeHint().height())
-        self.secondaryBarFrame.hide()
-        self.drawButton.clicked.connect(lambda: self.toggle_secondary_bar_frame(True))
-        self.scaleButton.clicked.connect(lambda: self.toggle_scale_button())
-        self.moveButton.clicked.connect(lambda: self.toggle_move_button())
+        self.toggle_secondary_bar_frame(None)
+
+        self.drawButton.clicked.connect(
+            lambda: self.toggle_secondary_bar_frame(self.drawPanel)
+        )
+        self.selectButton.clicked.connect(lambda: self.toggle_select_button())
+
+        self.selectPanel.scaleButton.clicked.connect(
+            lambda: self.presenter.set_tool(Tools.SCALE)
+        )
+        self.selectPanel.moveButton.clicked.connect(
+            lambda: self.presenter.set_tool(Tools.MOVE)
+        )
         self.textButton.clicked.connect(lambda: self.toggle_text_button())
 
-        self.freeDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.FREE_DRAW))
-        self.lineDrawButton.clicked.connect(lambda: presenter.set_tool(Tools.LINE))
-        self.triangleDrawButton.clicked.connect(
+        self.drawPanel.freeDrawButton.clicked.connect(
+            lambda: presenter.set_tool(Tools.FREE_DRAW)
+        )
+        self.drawPanel.lineDrawButton.clicked.connect(
+            lambda: presenter.set_tool(Tools.LINE)
+        )
+        self.drawPanel.triangleDrawButton.clicked.connect(
             lambda: presenter.set_tool(Tools.TRIANGLE)
         )
-        self.ellipseDrawButton.clicked.connect(
+        self.drawPanel.ellipseDrawButton.clicked.connect(
             lambda: presenter.set_tool(Tools.ELLIPSE)
         )
-        self.rectangleDrawButton.clicked.connect(
+        self.drawPanel.rectangleDrawButton.clicked.connect(
             lambda: presenter.set_tool(Tools.RECTANGLE)
         )
 
@@ -46,20 +65,22 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def refresh(self):
         self.canvasPlaceholder.update()
 
-    def toggle_secondary_bar_frame(self, is_visible: bool):
-        self.secondaryBarFrame.setVisible(is_visible)
-
-    def toggle_move_button(self):
-        self.toggle_secondary_bar_frame(False)
-        self.presenter.set_tool(Tools.SELECT)
-
-    def toggle_scale_button(self):
-        self.toggle_secondary_bar_frame(False)
-        self.presenter.set_tool(Tools.SCALE)
+    def toggle_secondary_bar_frame(self, panel):
+        layout = self.secondaryBarFrame.layout()
+        if self.currentPanel is not None:
+            layout.removeWidget(self.currentPanel)
+            self.currentPanel.setParent(None)
+        if panel:
+            layout.addWidget(panel)
+            self.currentPanel = panel
 
     def toggle_text_button(self):
-        self.toggle_secondary_bar_frame(False)
+        self.toggle_secondary_bar_frame(None)
         self.presenter.set_tool(Tools.TEXT)
+
+    def toggle_select_button(self):
+        self.toggle_secondary_bar_frame(self.selectPanel)
+        self.presenter.set_tool(Tools.SELECT)
 
     def save_file(self):
         filename, selected_filter = QtWidgets.QFileDialog.getSaveFileName(

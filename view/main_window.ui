@@ -74,19 +74,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="scaleButton">
+           <widget class="QPushButton" name="selectButton">
             <property name="text">
-             <string>Skaluj</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">primaryButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="moveButton">
-            <property name="text">
-             <string>Przesuń</string>
+             <string>Zaznacz</string>
             </property>
            </widget>
           </item>
@@ -102,8 +92,8 @@
        </item>
        <item>
         <widget class="QFrame" name="secondaryBarFrame">
-         <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
+         <property name="enabled">
+          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <property name="spacing">
@@ -121,50 +111,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="QPushButton" name="freeDrawButton">
-            <property name="text">
-             <string>Dowolnie</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">secondaryButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="lineDrawButton">
-            <property name="text">
-             <string>Linia</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="rectangleDrawButton">
-            <property name="text">
-             <string>Prostokąt</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="triangleDrawButton">
-            <property name="text">
-             <string>Trójkąt</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">secondaryButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="ellipseDrawButton">
-            <property name="text">
-             <string>Elipsa</string>
-            </property>
-            <attribute name="buttonGroup">
-             <string notr="true">secondaryButtonGroup</string>
-            </attribute>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -247,7 +193,15 @@
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edycja</string>
+    </property>
+    <addaction name="actionRgbTransformation"/>
+    <addaction name="actionFilters"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -288,6 +242,16 @@
   <action name="actionExport">
    <property name="text">
     <string>Eksportuj</string>
+   </property>
+  </action>
+  <action name="actionRgbTransformation">
+   <property name="text">
+    <string>Przekstałcenia kolorów</string>
+   </property>
+  </action>
+  <action name="actionFilters">
+   <property name="text">
+    <string>Filtry</string>
    </property>
   </action>
  </widget>
