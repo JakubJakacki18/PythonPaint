@@ -21,7 +21,9 @@ from utils.commands import (
     OpenFileCommand,
 )
 from utils.pnm_importer import PnmImporter, PnmFormat
-from .dialog_presenter import DialogPresenter
+from view.filter_dialog import FilterDialog
+from view.rgb_transformation_dialog import RgbTransformationDialog
+from .color_picker_dialog_presenter import ColorPickerDialogPresenter
 from view.color_dialog import ColorDialog
 from view.main_window import View
 from model.canvas_model import CanvasModel
@@ -29,6 +31,8 @@ from model.pen import Pen
 from model.point import Point
 from model.rectangle import Rectangle
 from utils.tools import Tools
+from .filter_dialog_presenter import FilterDialogPresenter
+from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
 class Presenter:
@@ -67,19 +71,25 @@ class Presenter:
                 self.model.clear_selection()
                 shape = self.model.shape_at(clicked_point)
                 if shape:
+                    self.view.toggle_photo_edit_options_enabled(False)
                     shape.selected = True
                     self.selected_shape = shape
                     self.dragging = True
                     self.last_mouse_pos = clicked_point
                 else:
+                    self.view.toggle_photo_edit_options_enabled(False)
                     self.selected_shape = None
             case Tools.SELECT:
                 shape = self.model.shape_at(clicked_point)
                 if shape:
                     shape.selected = True
                     self.selected_shape = shape
+                    self.view.toggle_photo_edit_options_enabled(
+                        isinstance(shape, Image)
+                    )
                 else:
                     self.selected_shape = None
+                    self.view.toggle_photo_edit_options_enabled(False)
             case Tools.NONE | _:
                 print(f"Selected tool: {self.tool}")
                 return
@@ -136,7 +146,9 @@ class Presenter:
         pass
 
     def set_color(self):
-        dialog_presenter = DialogPresenter(ColorModel(*self.current_pen.color), None)
+        dialog_presenter = ColorPickerDialogPresenter(
+            ColorModel(*self.current_pen.color), None
+        )
         dialog = ColorDialog(dialog_presenter)
         dialog_presenter.view = dialog
         dialog.update_from_rgb()
@@ -144,6 +156,23 @@ class Presenter:
             color = dialog_presenter.model
             self.current_pen = Pen((color.r, color.g, color.b), self.width)
             self.view.set_color_button(color.r, color.g, color.b)
+
+    def filter_image(self):
+
+        filter_presenter = FilterDialogPresenter(self.selected_shape, None)
+        dialog = FilterDialog(filter_presenter)
+        filter_presenter.view = dialog
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def rgb_transformation_image(self):
+        rgb_transformation_presenter = RgbTransformationDialogPresenter(
+            self.selected_shape, None
+        )
+        dialog = RgbTransformationDialog(rgb_transformation_presenter)
+        rgb_transformation_presenter.view = dialog
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
 
     def export_file(self, filename, selected_filter):
         if not filename:

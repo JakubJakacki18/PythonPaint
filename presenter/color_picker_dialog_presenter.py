@@ -4,12 +4,11 @@ from model.color_model import ColorModel
 from view.color_dialog import ColorDialog
 
 
-class DialogPresenter:
-    def __init__(self, model : ColorModel, view : ColorDialog):
+class ColorPickerDialogPresenter:
+    def __init__(self, model: ColorModel, view: ColorDialog):
         self.model = model
         self.view = view
-        self.dialog_color= None
-
+        self.dialog_color = None
 
     def on_color_picked(self, rgb_tuple):
         self.model.update_from_int_tuple(rgb_tuple)
@@ -34,9 +33,7 @@ class DialogPresenter:
         self.view.colorLabel.setStyleSheet(
             f"background-color: rgb({self.model.r}, {self.model.g}, {self.model.b});"
         )
-        self.view.init_color(self.model.r,self.model.g,self.model.b)
-
-
+        self.view.init_color(self.model.r, self.model.g, self.model.b)
 
 
 #
@@ -51,18 +48,17 @@ class DialogPresenter:
 #         self.view.okButton.clicked.connect(self.on_ok)
 #         self.view.cancelButton.clicked.connect(self.on_cancel)
 #
-        # initial sync
-        # self.update_preview()
+# initial sync
+# self.update_preview()
 
 
+# def update_preview(self):
+#     q = QColor.model
+#     self.view.preview_label.setPixmap(self._color_pixmap(q, 64, 64))
 
-    # def update_preview(self):
-    #     q = QColor.model
-    #     self.view.preview_label.setPixmap(self._color_pixmap(q, 64, 64))
 
-
-    # @staticmethod
-    # def _color_pixmap(qcolor: QColor, w, h):
-    #     img = QImage(w, h, QImage.Format.Format_RGB32)
-    #     img.fill(qcolor)
-    #     return QPixmap.fromImage(img)
+# @staticmethod
+# def _color_pixmap(qcolor: QColor, w, h):
+#     img = QImage(w, h, QImage.Format.Format_RGB32)
+#     img.fill(qcolor)
+#     return QPixmap.fromImage(img)

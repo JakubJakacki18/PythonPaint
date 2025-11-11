@@ -19,9 +19,15 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.selectPanel = uic.loadUi("view/select_panel_main_window.ui")
         self.currentPanel = None
 
+        self.toggle_photo_edit_options_enabled(False)
         self.toggle_secondary_bar_frame(self.drawPanel)
         self.navFrame.setFixedHeight(self.navFrame.sizeHint().height())
         self.toggle_secondary_bar_frame(None)
+
+        self.actionFilters.triggered.connect(lambda: presenter.filter_image())
+        self.actionRgbTransformation.triggered.connect(
+            lambda: presenter.rgb_transformation_image()
+        )
 
         self.drawButton.clicked.connect(
             lambda: self.toggle_secondary_bar_frame(self.drawPanel)
@@ -29,10 +35,10 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.selectButton.clicked.connect(lambda: self.toggle_select_button())
 
         self.selectPanel.scaleButton.clicked.connect(
-            lambda: self.presenter.set_tool(Tools.SCALE)
+            lambda: presenter.set_tool(Tools.SCALE)
         )
         self.selectPanel.moveButton.clicked.connect(
-            lambda: self.presenter.set_tool(Tools.MOVE)
+            lambda: presenter.set_tool(Tools.MOVE)
         )
         self.textButton.clicked.connect(lambda: self.toggle_text_button())
 
@@ -163,3 +169,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         image = QImage(pixels, width, height, 3 * width, QImage.Format.Format_RGB888)
         self.presenter.add_image(image)
         # self.canvasPlaceholder.set_image(image)
+
+    def toggle_photo_edit_options_enabled(self, is_enabled: bool):
+        self.actionFilters.setEnabled(is_enabled)
+        self.actionRgbTransformation.setEnabled(is_enabled)

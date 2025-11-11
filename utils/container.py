@@ -7,7 +7,7 @@ from model.line import Line
 from model.rectangle import Rectangle
 from model.text import Text
 from model.triangle import Triangle
-from presenter.presenter import Presenter
+from presenter.main_presenter import Presenter
 from utils.tools import Tools
 from view.main_window import View
 
@@ -25,21 +25,23 @@ class Container(containers.DeclarativeContainer):
     triangle_factory = providers.Factory(Triangle)
     free_draw_factory = providers.Factory(FreeDraw)
 
-    shape_factories = providers.Object( {
-        Tools.FREE_DRAW: free_draw_factory,
-        Tools.TEXT: text_factory,
-        Tools.RECTANGLE: rectangle_factory,
-        Tools.LINE: line_factory,
-        Tools.TRIANGLE: triangle_factory,
-        Tools.ELLIPSE: ellipse_factory,
-    })
+    shape_factories = providers.Object(
+        {
+            Tools.FREE_DRAW: free_draw_factory,
+            Tools.TEXT: text_factory,
+            Tools.RECTANGLE: rectangle_factory,
+            Tools.LINE: line_factory,
+            Tools.TRIANGLE: triangle_factory,
+            Tools.ELLIPSE: ellipse_factory,
+        }
+    )
 
     # Presenter
     presenter = providers.Singleton(
         Presenter,
         model=model,
-        view =None,
+        view=None,
         shape_factories=shape_factories,
     )
 
-    view = providers.Singleton(View,presenter)
+    view = providers.Singleton(View, presenter)
