@@ -62,3 +62,10 @@ class RgbTransformationDialogPresenter:
             arr.data, width, height, 3 * width, QImage.Format.Format_RGB888
         )
         return new_image.copy()
+
+    def change_brightness_of_image(self, brightness):
+        args = (brightness,) * 3
+        return self.recalculate_image(ImageTransformationOperation.ADD, *args)
+
+    def update_original_image(self, current_image):
+        self.model.image = current_image

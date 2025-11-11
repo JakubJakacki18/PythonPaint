@@ -2,7 +2,7 @@ from enum import Enum
 
 from PyQt6 import uic
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox
 
 from utils.image_transformation_operation import ImageTransformationOperation
 from view.rgb_transformation_dialog_ui import Ui_RgbTransformationDialog
@@ -16,7 +16,7 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
         self.rgbColorPickerWidget = uic.loadUi("view/rgb_color_picker_widget.ui")
         self.imagePreviewWidget = uic.loadUi("view/image_preview_widget.ui")
         self.imageFrame.layout().addWidget(self.imagePreviewWidget)
-        self.current_pixmap = None
+        self.current_image = None
 
         self.presenter = presenter
 
@@ -51,6 +51,12 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
         )
         self.rgbColorPickerWidget.rgbBlueSpinBox.valueChanged.connect(
             self.on_rgb_update
+        )
+        self.brightnessPickerWidget.brightnessSpinBox.valueChanged.connect(
+            self.on_brightness_update
+        )
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(
+            self.update_original_image
         )
 
     def untoggle_buttons(self, button):
@@ -103,6 +109,7 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
     def brightness_button_pressed(self):
         self.picked_operation_button = self.brightnessButton
         self.handle_button_pressed()
+        self.on_brightness_update()
 
     def gray_first_button_pressed(self):
         self.picked_operation_button = self.grayFirstButton
@@ -117,9 +124,10 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
         self.toggle_correct_picker(self.picked_operation_button)
 
     def set_images(self, image):
-        self.current_pixmap = QPixmap.fromImage(image)
-        self.imagePreviewWidget.editedImage.setPixmap(self.current_pixmap)
-        self.imagePreviewWidget.originalImage.setPixmap(self.current_pixmap)
+        self.current_image = image
+        pixmap = QPixmap.fromImage(image)
+        self.imagePreviewWidget.editedImage.setPixmap(pixmap)
+        self.imagePreviewWidget.originalImage.setPixmap(pixmap)
 
     def on_rgb_update(self):
         r = self.rgbColorPickerWidget.rgbRedSpinBox.value()
@@ -128,5 +136,19 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
         if self.picked_operation is None:
             return
         new_image = self.presenter.recalculate_image(self.picked_operation, r, g, b)
+        self.update_edited_image(new_image)
+
+    def on_brightness_update(self):
+        brightness = self.brightnessPickerWidget.brightnessSpinBox.value()
+        new_image = self.presenter.change_brightness_of_image(brightness)
+        self.update_edited_image(new_image)
+
+    def update_edited_image(self, new_image):
+        self.current_image = new_image
         new_pixmap = QPixmap.fromImage(new_image)
         self.imagePreviewWidget.editedImage.setPixmap(new_pixmap)
+
+    def update_original_image(self):
+        self.presenter.update_original_image(self.current_image)
+        pixmap = QPixmap.fromImage(self.current_image)
+        self.imagePreviewWidget.originalImage.setPixmap(pixmap)

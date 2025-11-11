@@ -15,24 +15,70 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QLabel" name="bRgbLabel">
+    <widget class="QLabel" name="brightnessLabel">
      <property name="text">
       <string>Jasność</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QSlider" name="bRgbSlider">
+    <widget class="QSlider" name="brightnessSlider">
+     <property name="minimum">
+      <number>-255</number>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QSpinBox" name="bRgbSpinBox"/>
+    <widget class="QSpinBox" name="brightnessSpinBox">
+     <property name="minimum">
+      <number>-255</number>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>brightnessSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>brightnessSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>150</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>brightnessSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>brightnessSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>359</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
