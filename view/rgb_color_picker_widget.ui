@@ -15,58 +15,176 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="rRgbLabel">
+    <widget class="QLabel" name="rgbRedLabel">
      <property name="text">
       <string>R</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QSlider" name="rRgbSlider">
+    <widget class="QSlider" name="rgbRedSlider">
+     <property name="maximum">
+      <number>255</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QSpinBox" name="rRgbSpinBox"/>
+    <widget class="QSpinBox" name="rgbRedSpinBox">
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="gRgbLabel">
+    <widget class="QLabel" name="rgbGreenLabel">
      <property name="text">
       <string>G</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QSlider" name="gRgbSlider">
+    <widget class="QSlider" name="rgbGreenSlider">
+     <property name="maximum">
+      <number>255</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QSpinBox" name="gRgbSpinBox"/>
+    <widget class="QSpinBox" name="rgbGreenSpinBox">
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="bRgbLabel">
+    <widget class="QLabel" name="rgbBlueLabel">
      <property name="text">
       <string>B</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QSlider" name="bRgbSlider">
+    <widget class="QSlider" name="rgbBlueSlider">
+     <property name="maximum">
+      <number>255</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QSpinBox" name="bRgbSpinBox"/>
+    <widget class="QSpinBox" name="rgbBlueSpinBox">
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>rgbRedSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rgbRedSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>133</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rgbGreenSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rgbGreenSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>280</x>
+     <y>105</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rgbBlueSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>rgbBlueSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>158</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rgbBlueSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rgbBlueSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>281</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rgbGreenSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rgbGreenSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>133</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rgbRedSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>rgbRedSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>283</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>135</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

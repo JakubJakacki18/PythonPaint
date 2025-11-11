@@ -162,6 +162,7 @@ class Presenter:
         filter_presenter = FilterDialogPresenter(self.selected_shape, None)
         dialog = FilterDialog(filter_presenter)
         filter_presenter.view = dialog
+
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 
@@ -171,6 +172,7 @@ class Presenter:
         )
         dialog = RgbTransformationDialog(rgb_transformation_presenter)
         rgb_transformation_presenter.view = dialog
+        rgb_transformation_presenter.init_images()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

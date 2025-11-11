@@ -1,15 +1,11 @@
 from enum import Enum
 
 from PyQt6 import uic
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QDialog
 
+from utils.image_transformation_operation import ImageTransformationOperation
 from view.rgb_transformation_dialog_ui import Ui_RgbTransformationDialog
-
-# class Operation(Enum):
-#     ADD= 0,
-#     SUBTRACT= 1,
-#     MULTIPLY= 2,
-#     DIVIDE= 3,
 
 
 class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
@@ -20,40 +16,51 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
         self.rgbColorPickerWidget = uic.loadUi("view/rgb_color_picker_widget.ui")
         self.imagePreviewWidget = uic.loadUi("view/image_preview_widget.ui")
         self.imageFrame.layout().addWidget(self.imagePreviewWidget)
+        self.current_pixmap = None
 
         self.presenter = presenter
-        self.mathOperationsButtons = (
+
+        self.math_operations_buttons = (
             self.addButton,
             self.multiplyButton,
             self.divideButton,
             self.minusButton,
         )
-        self.currentPanel = None
-        self.allOperationsButtons = (
-            *self.mathOperationsButtons,
+        self.current_panel = None
+        self.all_operation_buttons = (
+            *self.math_operations_buttons,
             self.brightnessButton,
             self.grayFirstButton,
             self.graySecondButton,
         )
 
-        self.pickedOperationButton = None
+        self.picked_operation_button = None
+        self.picked_operation = None
 
-        self.addButton.clicked.connect(lambda: self.add_button_pressed())
-        self.multiplyButton.clicked.connect(lambda: self.multiply_button_pressed())
-        self.divideButton.clicked.connect(lambda: self.divide_button_pressed())
-        self.minusButton.clicked.connect(lambda: self.minus_button_pressed())
-        self.brightnessButton.clicked.connect(lambda: self.brightness_button_pressed())
-        self.grayFirstButton.clicked.connect(lambda: self.gray_first_button_pressed())
-        self.graySecondButton.clicked.connect(lambda: self.gray_second_button_pressed())
+        self.addButton.clicked.connect(self.add_button_pressed)
+        self.multiplyButton.clicked.connect(self.multiply_button_pressed)
+        self.divideButton.clicked.connect(self.divide_button_pressed)
+        self.minusButton.clicked.connect(self.minus_button_pressed)
+        self.brightnessButton.clicked.connect(self.brightness_button_pressed)
+        self.grayFirstButton.clicked.connect(self.gray_first_button_pressed)
+        self.graySecondButton.clicked.connect(self.gray_second_button_pressed)
+
+        self.rgbColorPickerWidget.rgbRedSpinBox.valueChanged.connect(self.on_rgb_update)
+        self.rgbColorPickerWidget.rgbGreenSpinBox.valueChanged.connect(
+            self.on_rgb_update
+        )
+        self.rgbColorPickerWidget.rgbBlueSpinBox.valueChanged.connect(
+            self.on_rgb_update
+        )
 
     def untoggle_buttons(self, button):
-        all_operations = list(self.allOperationsButtons)
+        all_operations = list(self.all_operation_buttons)
         all_operations.remove(button)
         for button in all_operations:
             button.setChecked(False)
 
     def toggle_correct_picker(self, button):
-        if button in self.mathOperationsButtons:
+        if button in self.math_operations_buttons:
             self.toggle_picker(self.rgbColorPickerWidget)
         elif button == self.brightnessButton:
             self.toggle_picker(self.brightnessPickerWidget)
@@ -62,41 +69,64 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
 
     def toggle_picker(self, panel):
         layout = self.pickerFrame.layout()
-        if self.currentPanel is not None:
-            layout.removeWidget(self.currentPanel)
-            self.currentPanel.setParent(None)
+        if self.current_panel is not None:
+            layout.removeWidget(self.current_panel)
+            self.current_panel.setParent(None)
         if panel:
             layout.addWidget(panel)
-            self.currentPanel = panel
+            self.current_panel = panel
 
     def add_button_pressed(self):
-        self.pickedOperationButton = self.addButton
+        self.picked_operation_button = self.addButton
         self.handle_button_pressed()
+        self.picked_operation = ImageTransformationOperation.ADD
+        self.on_rgb_update()
 
     def multiply_button_pressed(self):
-        self.pickedOperationButton = self.multiplyButton
+        self.picked_operation_button = self.multiplyButton
         self.handle_button_pressed()
+        self.picked_operation = ImageTransformationOperation.MULTIPLY
+        self.on_rgb_update()
 
     def divide_button_pressed(self):
-        self.pickedOperationButton = self.divideButton
+        self.picked_operation_button = self.divideButton
         self.handle_button_pressed()
+        self.picked_operation = ImageTransformationOperation.DIVIDE
+        self.on_rgb_update()
 
     def minus_button_pressed(self):
-        self.pickedOperationButton = self.minusButton
+        self.picked_operation_button = self.minusButton
         self.handle_button_pressed()
+        self.picked_operation = ImageTransformationOperation.SUBTRACT
+        self.on_rgb_update()
 
     def brightness_button_pressed(self):
-        self.pickedOperationButton = self.brightnessButton
+        self.picked_operation_button = self.brightnessButton
         self.handle_button_pressed()
 
     def gray_first_button_pressed(self):
-        self.pickedOperationButton = self.grayFirstButton
+        self.picked_operation_button = self.grayFirstButton
         self.handle_button_pressed()
 
     def gray_second_button_pressed(self):
-        self.pickedOperationButton = self.graySecondButton
+        self.picked_operation_button = self.graySecondButton
         self.handle_button_pressed()
 
     def handle_button_pressed(self):
-        self.untoggle_buttons(self.pickedOperationButton)
-        self.toggle_correct_picker(self.pickedOperationButton)
+        self.untoggle_buttons(self.picked_operation_button)
+        self.toggle_correct_picker(self.picked_operation_button)
+
+    def set_images(self, image):
+        self.current_pixmap = QPixmap.fromImage(image)
+        self.imagePreviewWidget.editedImage.setPixmap(self.current_pixmap)
+        self.imagePreviewWidget.originalImage.setPixmap(self.current_pixmap)
+
+    def on_rgb_update(self):
+        r = self.rgbColorPickerWidget.rgbRedSpinBox.value()
+        g = self.rgbColorPickerWidget.rgbGreenSpinBox.value()
+        b = self.rgbColorPickerWidget.rgbBlueSpinBox.value()
+        if self.picked_operation is None:
+            return
+        new_image = self.presenter.recalculate_image(self.picked_operation, r, g, b)
+        new_pixmap = QPixmap.fromImage(new_image)
+        self.imagePreviewWidget.editedImage.setPixmap(new_pixmap)
