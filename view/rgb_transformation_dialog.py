@@ -114,10 +114,12 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
     def gray_first_button_pressed(self):
         self.picked_operation_button = self.grayFirstButton
         self.handle_button_pressed()
+        self.on_grayscale_update(0)
 
     def gray_second_button_pressed(self):
         self.picked_operation_button = self.graySecondButton
         self.handle_button_pressed()
+        self.on_grayscale_update(1)
 
     def handle_button_pressed(self):
         self.untoggle_buttons(self.picked_operation_button)
@@ -141,6 +143,10 @@ class RgbTransformationDialog(QDialog, Ui_RgbTransformationDialog):
     def on_brightness_update(self):
         brightness = self.brightnessPickerWidget.brightnessSpinBox.value()
         new_image = self.presenter.change_brightness_of_image(brightness)
+        self.update_edited_image(new_image)
+
+    def on_grayscale_update(self, method):
+        new_image = self.presenter.transform_color_image_into_gray(method)
         self.update_edited_image(new_image)
 
     def update_edited_image(self, new_image):
