@@ -158,11 +158,10 @@ class Presenter:
             self.view.set_color_button(color.r, color.g, color.b)
 
     def filter_image(self):
-
         filter_presenter = FilterDialogPresenter(self.selected_shape, None)
         dialog = FilterDialog(filter_presenter)
         filter_presenter.view = dialog
-
+        filter_presenter.init_images()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

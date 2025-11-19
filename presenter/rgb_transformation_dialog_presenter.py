@@ -15,19 +15,6 @@ class RgbTransformationDialogPresenter:
         self.view.set_images(self.model.image)
 
     def recalculate_image(self, operation, r, g, b):
-        # image = QImage(self.model.image)
-        # width = image.width()
-        # height = image.height()
-        #
-        # for y in range(height):
-        #     for x in range(width):
-        #         color = QColor(image.pixel(x, y))
-        #         r = min(color.red() + r, 255)
-        #         g = min(color.green() + g, 255)
-        #         b = min(color.blue() + b, 255)
-        #         image.setPixelColor(x, y, QColor(r, g, b))
-        #
-        # return image
         arr, width, height = self._load_image_to_arr()
         match operation:
             case ImageTransformationOperation.ADD:
@@ -87,5 +74,5 @@ class RgbTransformationDialogPresenter:
         arr = np.frombuffer(ptr, np.uint8).reshape(
             (height, image.bytesPerLine() // 3, 3)
         )
-        arr = arr[:, :width, :]
+        arr = arr[:, :width, :].copy()
         return arr, width, height

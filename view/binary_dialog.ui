@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FilterDialog</class>
- <widget class="QDialog" name="FilterDialog">
+ <class>BinaryDialog</class>
+ <widget class="QDialog" name="BinaryDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>356</height>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,14 +24,35 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QFrame" name="imageFrame">
+       <widget class="QFrame" name="frame_3">
         <property name="frameShape">
          <enum>QFrame::Shape::StyledPanel</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Shadow::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QFrame" name="histogramPlaceholderFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="imagePlacehodlerFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -44,68 +65,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QFrame" name="frame_4">
-           <property name="frameShape">
-            <enum>QFrame::Shape::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Shadow::Raised</enum>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="QRadioButton" name="smoothButton">
-              <property name="text">
-               <string>Wygładzający</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="medianButton">
-              <property name="text">
-               <string>Medianowy</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="sobelHorizontalButton">
-              <property name="text">
-               <string>Sobela (poziomy)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="sobelVerticalButton">
-              <property name="text">
-               <string>Sobela (pionowy)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="highPassButton">
-              <property name="text">
-               <string>Filtr górnoprzepustowy wyostrzający</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="gaussButton">
-              <property name="text">
-               <string>Filtr rozmycie gaussowskie</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="customButton">
-              <property name="text">
-               <string>Dowolny</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QFrame" name="frame_3">
+          <widget class="QFrame" name="frame_5">
            <property name="frameShape">
             <enum>QFrame::Shape::StyledPanel</enum>
            </property>
@@ -114,47 +74,91 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QFrame" name="frame_6">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
+             <widget class="QRadioButton" name="manualButton">
+              <property name="text">
+               <string>Ręczna</string>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QLabel" name="dimensionLabel">
-                 <property name="text">
-                  <string>Wymiar:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="dimensionSpinBox">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>9</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>2</number>
-                 </property>
-                 <property name="stepType">
-                  <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="spinBoxGridPlaceholderFrame">
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
+             <widget class="QRadioButton" name="percentButton">
+              <property name="text">
+               <string>Procentowa</string>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="IterativeButton">
+              <property name="text">
+               <string>Iteratywna średnia</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="entropyButton">
+              <property name="text">
+               <string>Selekcja entropii</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="otsuButton">
+              <property name="text">
+               <string>Otsu</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="nilblackButton">
+              <property name="text">
+               <string>Nilblack</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="sauvolaButton">
+              <property name="text">
+               <string>Sauvola</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="phansalkarButton">
+              <property name="text">
+               <string>Phansalkar</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_4">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="minValueLabel">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="thresholdSlider">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="maxValueLabel">
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -184,7 +188,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>FilterDialog</receiver>
+   <receiver>BinaryDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -200,7 +204,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>FilterDialog</receiver>
+   <receiver>BinaryDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
