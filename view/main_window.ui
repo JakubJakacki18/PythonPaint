@@ -199,6 +199,7 @@
     </property>
     <addaction name="actionRgbTransformation"/>
     <addaction name="actionFilters"/>
+    <addaction name="actionBinarization"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -254,6 +255,11 @@
     <string>Filtry</string>
    </property>
   </action>
+  <action name="actionBinarization">
+   <property name="text">
+    <string>Binaryzacja</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -267,6 +273,5 @@
  <connections/>
  <buttongroups>
   <buttongroup name="primaryButtonGroup"/>
-  <buttongroup name="secondaryButtonGroup"/>
  </buttongroups>
 </ui>

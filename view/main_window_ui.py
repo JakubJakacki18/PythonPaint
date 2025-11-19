@@ -118,6 +118,8 @@ class Ui_MainWindow(object):
         self.actionRgbTransformation.setObjectName("actionRgbTransformation")
         self.actionFilters = QtGui.QAction(parent=MainWindow)
         self.actionFilters.setObjectName("actionFilters")
+        self.actionBinarization = QtGui.QAction(parent=MainWindow)
+        self.actionBinarization.setObjectName("actionBinarization")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addAction(self.actionExport)
@@ -126,6 +128,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionClose)
         self.menuEdit.addAction(self.actionRgbTransformation)
         self.menuEdit.addAction(self.actionFilters)
+        self.menuEdit.addAction(self.actionBinarization)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
 
@@ -150,6 +153,7 @@ class Ui_MainWindow(object):
         self.actionExport.setText(_translate("MainWindow", "Eksportuj"))
         self.actionRgbTransformation.setText(_translate("MainWindow", "Przekstałcenia kolorów"))
         self.actionFilters.setText(_translate("MainWindow", "Filtry"))
+        self.actionBinarization.setText(_translate("MainWindow", "Binaryzacja"))
 from view.canvas_widget import CanvasWidget
 
 

@@ -28,6 +28,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionRgbTransformation.triggered.connect(
             lambda: presenter.rgb_transformation_image()
         )
+        self.actionBinarization.triggered.connect(presenter.binarize_image)
 
         self.drawButton.clicked.connect(
             lambda: self.toggle_secondary_bar_frame(self.drawPanel)

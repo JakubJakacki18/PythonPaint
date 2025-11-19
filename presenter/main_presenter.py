@@ -21,8 +21,10 @@ from utils.commands import (
     OpenFileCommand,
 )
 from utils.pnm_importer import PnmImporter, PnmFormat
+from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
 from view.rgb_transformation_dialog import RgbTransformationDialog
+from .binarization_dialog_presenter import BinarizationDialogPresenter
 from .color_picker_dialog_presenter import ColorPickerDialogPresenter
 from view.color_dialog import ColorDialog
 from view.main_window import View
@@ -172,6 +174,14 @@ class Presenter:
         dialog = RgbTransformationDialog(rgb_transformation_presenter)
         rgb_transformation_presenter.view = dialog
         rgb_transformation_presenter.init_images()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def binarize_image(self):
+        binarization_presenter = BinarizationDialogPresenter(self.selected_shape, None)
+        dialog = BinaryDialog(binarization_presenter)
+        binarization_presenter.view = dialog
+        binarization_presenter.init_images()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

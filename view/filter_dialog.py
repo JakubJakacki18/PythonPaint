@@ -47,6 +47,7 @@ class FilterDialog(QDialog, Ui_FilterDialog):
         self.doubleSpinBoxes: list[list[QDoubleSpinBox]] = []
         self.set_dimensions()
         self.matrix = None
+        self.dimensionFrame.hide()
 
     def set_images(self, image):
         self.current_image = image
@@ -55,6 +56,10 @@ class FilterDialog(QDialog, Ui_FilterDialog):
         self.imagePreviewWidget.originalImage.setPixmap(pixmap)
 
     def on_radio_button_clicked(self, operation: ImageFilterOperation):
+        if operation == ImageFilterOperation.CUSTOM:
+            self.dimensionFrame.show()
+        else:
+            self.dimensionFrame.hide()
         new_image = self.presenter.apply_filter(operation, self.matrix)
         self.update_edited_image(new_image)
 
