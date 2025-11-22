@@ -27,7 +27,7 @@ class FilterDialogPresenter:
         return kernel
 
     def apply_filter(self, operation: ImageFilterOperation, matrix=None):
-        arr, width, height = self._load_image_to_arr()
+        arr, width, height = self._load_image_to_arr(self.model.image)
 
         r = arr[:, :, 0]
         g = arr[:, :, 1]
@@ -105,16 +105,20 @@ class FilterDialogPresenter:
         )
         return new_image.copy()
 
-    def _load_image_to_arr(self):
-        image = QImage(self.model.image)
+    def _load_image_to_arr(self,q_image):
+        image = q_image
         width = image.width()
         height = image.height()
+        bytes_per_line = image.bytesPerLine()
+
         ptr = image.bits()
-        ptr.setsize(image.height() * image.bytesPerLine())
-        arr = np.frombuffer(ptr, np.uint8).reshape(
-            (height, image.bytesPerLine() // 3, 3)
+        ptr.setsize(bytes_per_line * height)
+
+        buffer = np.frombuffer(ptr, dtype=np.uint8).reshape((height, bytes_per_line))
+        channels = 3
+        arr = (
+            buffer[:, : width * channels].reshape((height, width, channels)).copy()
         )
-        arr = arr[:, :width, :].copy()
         return arr, width, height
 
 
