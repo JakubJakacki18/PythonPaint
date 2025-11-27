@@ -1,14 +1,32 @@
 from model.image import Image
+from utils.binary_operation import BinaryOperation
 from view.binary_dialog import BinaryDialog
+import numpy as np
 
 
 class BinarizationDialogPresenter:
     def __init__(self, model: Image, view: BinaryDialog):
         self.model = model
         self.view = view
+        
 
     def init_images(self):
         self.view.set_images(self.model.image)
 
     def update_original_image(self, current_image):
         self.model.image = current_image
+
+    def apply_binarization(self, operation : BinaryOperation, value = None ):
+        arr, width, height = self._load_image_to_arr(self.model.image)
+
+        r = arr[:, :, 0]
+        g = arr[:, :, 1]
+        b = arr[:, :, 2]
+
+        match operation:
+            case BinaryOperation.MANUAL:
+                pass
+            case BinaryOperation.PERCENT:
+                pass
+
+
