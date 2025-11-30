@@ -5,6 +5,7 @@ from PyQt6.QtGui import QImage
 
 from model.image import Image
 from utils.image_filter_operation import ImageFilterOperation
+from utils.image_service import ImageService
 from view.filter_dialog import FilterDialog
 
 
@@ -27,7 +28,7 @@ class FilterDialogPresenter:
         return kernel
 
     def apply_filter(self, operation: ImageFilterOperation, matrix=None):
-        arr, width, height = self._load_image_to_arr(self.model.image)
+        arr, width, height = ImageService.load_image_to_arr(self.model.image)
 
         r = arr[:, :, 0]
         g = arr[:, :, 1]
@@ -104,22 +105,6 @@ class FilterDialogPresenter:
             result.data, width, height, 3 * width, QImage.Format.Format_RGB888
         )
         return new_image.copy()
-
-    def _load_image_to_arr(self,q_image):
-        image = q_image
-        width = image.width()
-        height = image.height()
-        bytes_per_line = image.bytesPerLine()
-
-        ptr = image.bits()
-        ptr.setsize(bytes_per_line * height)
-
-        buffer = np.frombuffer(ptr, dtype=np.uint8).reshape((height, bytes_per_line))
-        channels = 3
-        arr = (
-            buffer[:, : width * channels].reshape((height, width, channels)).copy()
-        )
-        return arr, width, height
 
 
 def convolve(channel, kernel):

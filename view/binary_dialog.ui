@@ -40,6 +40,15 @@
            <property name="frameShadow">
             <enum>QFrame::Shadow::Raised</enum>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QLabel" name="histogramGraph">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -50,6 +59,15 @@
            <property name="frameShadow">
             <enum>QFrame::Shadow::Raised</enum>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QLabel" name="originalImage">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
@@ -78,6 +96,9 @@
               <property name="text">
                <string>Ręczna</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -88,7 +109,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="IterativeButton">
+             <widget class="QRadioButton" name="iterativeButton">
               <property name="text">
                <string>Iteratywna średnia</string>
               </property>
@@ -144,12 +165,18 @@
             <item>
              <widget class="QLabel" name="minValueLabel">
               <property name="text">
-               <string/>
+               <string>0</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QSlider" name="thresholdSlider">
+              <property name="maximum">
+               <number>255</number>
+              </property>
+              <property name="value">
+               <number>127</number>
+              </property>
               <property name="orientation">
                <enum>Qt::Orientation::Horizontal</enum>
               </property>
@@ -157,6 +184,44 @@
             </item>
             <item>
              <widget class="QLabel" name="maxValueLabel">
+              <property name="text">
+               <string>255</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="currentValueFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="currentValueDescriptionLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Obecna wartość: </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="currentValueLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string/>
               </property>

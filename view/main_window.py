@@ -174,3 +174,4 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
     def toggle_photo_edit_options_enabled(self, is_enabled: bool):
         self.actionFilters.setEnabled(is_enabled)
         self.actionRgbTransformation.setEnabled(is_enabled)
+        self.actionBinarization.setEnabled(is_enabled)
