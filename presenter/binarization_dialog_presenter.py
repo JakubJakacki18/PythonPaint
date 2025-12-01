@@ -56,5 +56,5 @@ class BinarizationDialogPresenter:
         new_image = QImage(
             new_arr.data, width, height, 3 * width, QImage.Format.Format_RGB888
         )
-        histogram = ImageService.gray_histogram_from_array(new_arr)
+        histogram = ImageService.histogram_from_array(new_arr)
         return new_image.copy(), histogram

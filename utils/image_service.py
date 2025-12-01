@@ -1,6 +1,8 @@
 import numpy as np
 from PyQt6.QtGui import QImage
 
+from utils.histogram_operation import ColorChannel
+
 
 class ImageService:
     @staticmethod
@@ -31,13 +33,38 @@ class ImageService:
         return gray
 
     @staticmethod
-    def gray_histogram_from_array(arr: np.ndarray) -> np.ndarray:
-        hist_r, _ = np.histogram(arr[:, :, 0], bins=256, range=(0, 255))
-        return hist_r
+    def histogram_from_array(
+        arr: np.ndarray, operation: ColorChannel = ColorChannel.GRAY
+    ) -> np.ndarray:
+        channel = operation.value if operation != ColorChannel.GRAY else 0
+        hist, _ = np.histogram(arr[:, :, channel], bins=256, range=(0, 255))
+        return hist
 
     @staticmethod
-    def convert_to_3d_array(arr: np.ndarray) -> np.ndarray:
-        return np.repeat(arr[..., np.newaxis], 3, axis=2)
+    def convert_to_3d_array(
+        arr: np.ndarray, operation: ColorChannel = ColorChannel.GRAY
+    ) -> np.ndarray:
+        channel_map = {
+            ColorChannel.RED: (1, 0, 0),
+            ColorChannel.GREEN: (0, 1, 0),
+            ColorChannel.BLUE: (0, 0, 1),
+            ColorChannel.GRAY: (1, 1, 1),
+        }
+        r_mult, g_mult, b_mult = channel_map[operation]
+
+        h, w = arr.shape
+        result = np.zeros((h, w, 3), dtype=arr.dtype)
+        result[:, :, 0] = arr * r_mult
+        result[:, :, 1] = arr * g_mult
+        result[:, :, 2] = arr * b_mult
+        return result
+
+    @staticmethod
+    def isolate_channel(arr: np.ndarray, operation: ColorChannel) -> np.ndarray:
+        mask = np.arange(3) != operation.value
+        out = arr.copy()
+        out[:, :, mask] = 0
+        return out
 
     @staticmethod
     def otsu_threshold(arr: np.ndarray) -> int:
@@ -242,3 +269,39 @@ class ImageService:
         )
 
         return (gray > threshold).astype(np.uint8) * 255
+
+    @staticmethod
+    def histogram_equalization(arr: np.ndarray, operation: ColorChannel) -> np.ndarray:
+        histogram = ImageService.histogram_from_array(arr, operation)
+        cdf = histogram.cumsum()
+        if cdf.max() - cdf.min() == 0:
+            return arr
+        cdf_normalized = (cdf - cdf.min()) * 255 / (cdf.max() - cdf.min())
+        channel = (
+            operation.value
+            if operation != ColorChannel.GRAY
+            else ColorChannel.RED.value
+        )
+        channel_arr = arr[:, :, channel]
+        equalized = cdf_normalized[channel_arr].astype(np.uint8)
+        result_arr = ImageService.convert_to_3d_array(equalized, operation)
+
+        return result_arr
+
+    @staticmethod
+    def histogram_extend(arr: np.ndarray, operation: ColorChannel) -> np.ndarray:
+        channel = (
+            operation.value
+            if operation != ColorChannel.GRAY
+            else ColorChannel.RED.value
+        )
+        channel_arr = arr[:, :, channel]
+        min_val = float(channel_arr.min())
+        max_val = float(channel_arr.max())
+        if max_val == min_val:
+            return arr
+
+        stretched = (channel_arr - min_val) * (255.0 / (max_val - min_val))
+        stretched = np.clip(stretched, 0, 255).astype(np.uint8)
+        result_arr = ImageService.convert_to_3d_array(stretched, operation)
+        return result_arr

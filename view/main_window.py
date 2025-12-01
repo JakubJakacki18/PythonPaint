@@ -29,6 +29,7 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda: presenter.rgb_transformation_image()
         )
         self.actionBinarization.triggered.connect(presenter.binarize_image)
+        self.actionHistogram.triggered.connect(presenter.histogram_image)
 
         self.drawButton.clicked.connect(
             lambda: self.toggle_secondary_bar_frame(self.drawPanel)
@@ -175,3 +176,4 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionFilters.setEnabled(is_enabled)
         self.actionRgbTransformation.setEnabled(is_enabled)
         self.actionBinarization.setEnabled(is_enabled)
+        self.actionHistogram.setEnabled(is_enabled)

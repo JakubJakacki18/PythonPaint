@@ -200,6 +200,7 @@
     <addaction name="actionRgbTransformation"/>
     <addaction name="actionFilters"/>
     <addaction name="actionBinarization"/>
+    <addaction name="actionHistogram"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -258,6 +259,11 @@
   <action name="actionBinarization">
    <property name="text">
     <string>Binaryzacja</string>
+   </property>
+  </action>
+  <action name="actionHistogram">
+   <property name="text">
+    <string>Histogram</string>
    </property>
   </action>
  </widget>

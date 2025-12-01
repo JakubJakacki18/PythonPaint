@@ -23,6 +23,7 @@ from utils.commands import (
 from utils.pnm_importer import PnmImporter, PnmFormat
 from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
+from view.histogram_dialog import HistogramDialog
 from view.rgb_transformation_dialog import RgbTransformationDialog
 from .binarization_dialog_presenter import BinarizationDialogPresenter
 from .color_picker_dialog_presenter import ColorPickerDialogPresenter
@@ -34,6 +35,7 @@ from model.point import Point
 from model.rectangle import Rectangle
 from utils.tools import Tools
 from .filter_dialog_presenter import FilterDialogPresenter
+from .histogram_dialog_presenter import HistogramDialogPresenter
 from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
@@ -182,6 +184,14 @@ class Presenter:
         dialog = BinaryDialog(binarization_presenter)
         binarization_presenter.view = dialog
         binarization_presenter.init_images()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def histogram_image(self):
+        histogram_presenter = HistogramDialogPresenter(self.selected_shape, None)
+        dialog = HistogramDialog(histogram_presenter)
+        histogram_presenter.view = dialog
+        histogram_presenter.init_images()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 
