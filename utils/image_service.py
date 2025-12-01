@@ -11,12 +11,12 @@ class ImageService:
     def load_image_to_arr(image: QImage):
         width = image.width()
         height = image.height()
+        bytes_per_line = image.bytesPerLine()
         ptr = image.bits()
-        ptr.setsize(image.height() * image.bytesPerLine())
-        arr = np.frombuffer(ptr, np.uint8).reshape(
-            (height, image.bytesPerLine() // 3, 3)
-        )
-        arr = arr[:, :width, :].copy()
+        ptr.setsize(bytes_per_line * height)
+        buffer = np.frombuffer(ptr, dtype=np.uint8).reshape((height, bytes_per_line))
+        channels = 3
+        arr = buffer[:, : width * channels].reshape((height, width, channels)).copy()
         return arr, width, height
 
     @staticmethod
@@ -24,7 +24,7 @@ class ImageService:
         arr: np.ndarray, max_value: int = 1, threshold: int = 127
     ) -> np.ndarray:
         gray_arr = ImageService.grayscale_of_image(arr)
-        binarized_arr = np.where(gray_arr >= threshold, max_value, 0).astype(np.uint8)
+        binarized_arr = np.where(gray_arr > threshold, max_value, 0).astype(np.uint8)
         return binarized_arr
 
     @staticmethod
@@ -307,3 +307,53 @@ class ImageService:
         stretched = np.clip(stretched, 0, 255).astype(np.uint8)
         result_arr = ImageService.convert_to_3d_array(stretched, operation)
         return result_arr
+
+    @staticmethod
+    def sliding_window_view(
+        channel: np.ndarray,
+        kernel: np.ndarray,
+        mode: Literal["edge", "constant"] = "edge",
+    ):
+        height, width = channel.shape
+        kh, kw = kernel.shape
+        pad_h = kh // 2
+        pad_w = kw // 2
+
+        padded = np.pad(channel, ((pad_h, pad_h), (pad_w, pad_w)), mode=mode)
+
+        shape = (height, width, kh, kw)
+        strides = (
+            padded.strides[0],
+            padded.strides[1],
+            padded.strides[0],
+            padded.strides[1],
+        )
+
+        windows = np.lib.stride_tricks.as_strided(
+            padded, shape=shape, strides=strides, writeable=False
+        )
+        return windows
+
+    @staticmethod
+    def erosion(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
+        mask = kernel == 1
+        return np.all(windows[:, :, mask] == 1, axis=-1).astype(np.uint8)
+
+    @staticmethod
+    def dilation(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
+        mask = kernel == 1
+        return np.any(windows[:, :, mask] == 1, axis=-1).astype(np.uint8)
+
+    @staticmethod
+    def hitOrMiss(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        pass
+
+    @staticmethod
+    def opening(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        pass
+
+    @staticmethod
+    def closing(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        pass
