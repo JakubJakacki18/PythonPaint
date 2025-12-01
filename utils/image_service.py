@@ -1,7 +1,9 @@
+from typing import Literal
+
 import numpy as np
 from PyQt6.QtGui import QImage
 
-from utils.histogram_operation import ColorChannel
+from utils.enums.color_channel import ColorChannel
 
 
 class ImageService:

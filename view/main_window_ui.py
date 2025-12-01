@@ -122,6 +122,8 @@ class Ui_MainWindow(object):
         self.actionBinarization.setObjectName("actionBinarization")
         self.actionHistogram = QtGui.QAction(parent=MainWindow)
         self.actionHistogram.setObjectName("actionHistogram")
+        self.actionMorph = QtGui.QAction(parent=MainWindow)
+        self.actionMorph.setObjectName("actionMorph")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addAction(self.actionExport)
@@ -132,6 +134,7 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionFilters)
         self.menuEdit.addAction(self.actionBinarization)
         self.menuEdit.addAction(self.actionHistogram)
+        self.menuEdit.addAction(self.actionMorph)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
 
@@ -158,6 +161,7 @@ class Ui_MainWindow(object):
         self.actionFilters.setText(_translate("MainWindow", "Filtry"))
         self.actionBinarization.setText(_translate("MainWindow", "Binaryzacja"))
         self.actionHistogram.setText(_translate("MainWindow", "Histogram"))
+        self.actionMorph.setText(_translate("MainWindow", "Operacje morfologiczne"))
 from view.canvas_widget import CanvasWidget
 
 

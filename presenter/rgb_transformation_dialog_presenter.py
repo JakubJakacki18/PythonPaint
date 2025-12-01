@@ -1,9 +1,9 @@
 import numpy as np
-from PyQt6.QtGui import QImage, QColor
+from PyQt6.QtGui import QImage
 
 from model.image import Image
 from utils.image_service import ImageService
-from utils.image_transformation_operation import ImageTransformationOperation
+from utils.enums.image_transformation_operation import ImageTransformationOperation
 from view.rgb_transformation_dialog import RgbTransformationDialog
 
 

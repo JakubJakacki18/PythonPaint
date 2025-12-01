@@ -1,18 +1,10 @@
-import asyncio
-import copy
 import os
-from unittest import case
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog
 
 from model.color_model import ColorModel
-from model.ellipse import Ellipse
-from model.free_draw import FreeDraw
 from model.image import Image
-from model.text import Text
-from model.triangle import Triangle
-from model.line import Line
 from utils.commands import (
     InvokerQueue,
     ImportCommand,
@@ -20,10 +12,11 @@ from utils.commands import (
     AsyncLoopThread,
     OpenFileCommand,
 )
-from utils.pnm_importer import PnmImporter, PnmFormat
+from utils.pnm_importer import PnmFormat
 from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
 from view.histogram_dialog import HistogramDialog
+from view.morph_dialog import MorphDialog
 from view.rgb_transformation_dialog import RgbTransformationDialog
 from .binarization_dialog_presenter import BinarizationDialogPresenter
 from .color_picker_dialog_presenter import ColorPickerDialogPresenter
@@ -32,10 +25,10 @@ from view.main_window import View
 from model.canvas_model import CanvasModel
 from model.pen import Pen
 from model.point import Point
-from model.rectangle import Rectangle
-from utils.tools import Tools
+from utils.enums.tools import Tools
 from .filter_dialog_presenter import FilterDialogPresenter
 from .histogram_dialog_presenter import HistogramDialogPresenter
+from .morph_dialog_presenter import MorphDialogPresenter
 from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
@@ -192,6 +185,15 @@ class Presenter:
         dialog = HistogramDialog(histogram_presenter)
         histogram_presenter.view = dialog
         histogram_presenter.init_images()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def morph_image(self):
+        morph_presenter = MorphDialogPresenter(self.selected_shape, None)
+
+        dialog = MorphDialog(morph_presenter)
+        morph_presenter.view = dialog
+        morph_presenter.init_images()
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

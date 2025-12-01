@@ -1,7 +1,7 @@
 from PyQt6.QtGui import QImage
 
 from model.image import Image
-from utils.binary_operation import BinaryOperation
+from utils.enums.binary_operation import BinaryOperation
 from utils.image_service import ImageService
 from view.binary_dialog import BinaryDialog
 import numpy as np

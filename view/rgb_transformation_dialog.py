@@ -1,10 +1,8 @@
-from enum import Enum
-
 from PyQt6 import uic
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox
 
-from utils.image_transformation_operation import ImageTransformationOperation
+from utils.enums.image_transformation_operation import ImageTransformationOperation
 from view.rgb_transformation_dialog_ui import Ui_RgbTransformationDialog
 
 

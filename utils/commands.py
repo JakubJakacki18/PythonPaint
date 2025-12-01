@@ -5,7 +5,7 @@ from abc import abstractmethod, ABC
 import numpy as np
 
 from PIL import Image
-from utils.pnm_format import PnmFormat
+from utils.enums.pnm_format import PnmFormat
 from utils.pnm_importer import PnmImporter
 
 

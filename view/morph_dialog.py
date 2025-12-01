@@ -4,17 +4,17 @@ from PyQt6 import uic
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import (
     QDialog,
-    QDoubleSpinBox,
-    QGridLayout,
-    QWidget,
     QDialogButtonBox,
+    QDoubleSpinBox,
+    QWidget,
+    QGridLayout,
 )
 
-from utils.enums.image_filter_operation import ImageFilterOperation
-from view.filter_dialog_ui import Ui_FilterDialog
+from utils.enums.morph_operation import MorphOperation
+from view.morph_dialog_ui import Ui_MorphDialog
 
 
-class FilterDialog(QDialog, Ui_FilterDialog):
+class MorphDialog(QDialog, Ui_MorphDialog):
     def __init__(self, presenter, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -24,13 +24,11 @@ class FilterDialog(QDialog, Ui_FilterDialog):
         self.current_image = None
 
         self.radio_buttons = {
-            self.smoothButton: ImageFilterOperation.SMOOTH,
-            self.gaussButton: ImageFilterOperation.GAUSS,
-            self.medianButton: ImageFilterOperation.MEDIAN,
-            self.highPassButton: ImageFilterOperation.HIGH_PASS,
-            self.sobelVerticalButton: ImageFilterOperation.SOBEL_VERTICAL,
-            self.sobelHorizontalButton: ImageFilterOperation.SOBEL_HORIZONTAL,
-            self.customButton: ImageFilterOperation.CUSTOM,
+            self.dilatationButton: MorphOperation.DILATION,
+            self.erosionButton: MorphOperation.EROSION,
+            self.hitOrMissButton: MorphOperation.HIT_OR_MISS,
+            self.closingButton: MorphOperation.CLOSING,
+            self.openingButton: MorphOperation.OPENING,
         }
 
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(
@@ -55,11 +53,14 @@ class FilterDialog(QDialog, Ui_FilterDialog):
         self.imagePreviewWidget.editedImage.setPixmap(pixmap)
         self.imagePreviewWidget.originalImage.setPixmap(pixmap)
 
-    def on_radio_button_clicked(self, operation: ImageFilterOperation):
-        if operation == ImageFilterOperation.CUSTOM:
-            self.dimensionFrame.show()
-        else:
-            self.dimensionFrame.hide()
+    def on_radio_button_clicked(self, operation: MorphOperation):
+        # if operation == MorphOperation.CUSTOM:
+        #     self.dimensionFrame.show()
+        # else:
+        #     self.dimensionFrame.hide()
+
+        self.dimensionFrame.show()
+
         new_image = self.presenter.apply_filter(operation, self.matrix)
         self.update_edited_image(new_image)
 
@@ -97,8 +98,6 @@ class FilterDialog(QDialog, Ui_FilterDialog):
 
     def on_spinbox_changed(self):
         self.matrix = self._get_matrix_values()
-        if self.customButton.isChecked():
-            self.on_radio_button_clicked(ImageFilterOperation.CUSTOM)
 
     def _get_matrix_values(self):
         return [[spin.value() for spin in row] for row in self.doubleSpinBoxes]

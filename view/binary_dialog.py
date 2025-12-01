@@ -5,7 +5,7 @@ from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox
 import io
 
-from utils.binary_operation import BinaryOperation
+from utils.enums.binary_operation import BinaryOperation
 from view.binary_dialog_ui import Ui_BinaryDialog
 
 
@@ -82,7 +82,9 @@ class BinaryDialog(QDialog, Ui_BinaryDialog):
 
     def histogram_to_pixmap(self, histogram) -> QPixmap:
         plt.figure(figsize=(4, 2), dpi=100)
-        plt.plot(histogram, color="red")
+        plt.bar(
+            [0, 255], [histogram[0], histogram[255]], color=["blue", "red"], width=10
+        )
         plt.tight_layout()
         buf = io.BytesIO()
         plt.savefig(buf, format="png")

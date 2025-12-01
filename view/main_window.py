@@ -4,7 +4,7 @@ import numpy as np
 from PyQt6 import QtWidgets, QtGui, uic
 from PyQt6.QtGui import QImage
 
-from utils.tools import Tools
+from utils.enums.tools import Tools
 from view.main_window_ui import Ui_MainWindow
 
 
@@ -23,13 +23,6 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.toggle_secondary_bar_frame(self.drawPanel)
         self.navFrame.setFixedHeight(self.navFrame.sizeHint().height())
         self.toggle_secondary_bar_frame(None)
-
-        self.actionFilters.triggered.connect(lambda: presenter.filter_image())
-        self.actionRgbTransformation.triggered.connect(
-            lambda: presenter.rgb_transformation_image()
-        )
-        self.actionBinarization.triggered.connect(presenter.binarize_image)
-        self.actionHistogram.triggered.connect(presenter.histogram_image)
 
         self.drawButton.clicked.connect(
             lambda: self.toggle_secondary_bar_frame(self.drawPanel)
@@ -60,14 +53,23 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda: presenter.set_tool(Tools.RECTANGLE)
         )
 
+        # PLIK
         self.actionSave.triggered.connect(lambda: self.save_file())
         self.actionOpen.triggered.connect(lambda: self.open_file())
         self.actionClose.triggered.connect(lambda: presenter.close())
-
         self.actionExport.triggered.connect(lambda: self.export_file_as())
         self.actionImport.triggered.connect(lambda: self.import_file())
 
-        self.colorButton.clicked.connect(lambda: presenter.set_color())
+        # EDYTUJ
+        self.actionFilters.triggered.connect(presenter.filter_image)
+        self.actionRgbTransformation.triggered.connect(
+            presenter.rgb_transformation_image
+        )
+        self.actionBinarization.triggered.connect(presenter.binarize_image)
+        self.actionHistogram.triggered.connect(presenter.histogram_image)
+        self.actionMorph.triggered.connect(presenter.morph_image)
+
+        self.colorButton.clicked.connect(presenter.set_color)
         self.set_color_button(0, 0, 0)
 
     def refresh(self):
@@ -177,3 +179,4 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionRgbTransformation.setEnabled(is_enabled)
         self.actionBinarization.setEnabled(is_enabled)
         self.actionHistogram.setEnabled(is_enabled)
+        self.actionMorph.setEnabled(is_enabled)

@@ -8,7 +8,7 @@ from model.rectangle import Rectangle
 from model.text import Text
 from model.triangle import Triangle
 from presenter.main_presenter import Presenter
-from utils.tools import Tools
+from utils.enums.tools import Tools
 from view.main_window import View
 
 

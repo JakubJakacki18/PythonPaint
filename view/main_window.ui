@@ -201,6 +201,7 @@
     <addaction name="actionFilters"/>
     <addaction name="actionBinarization"/>
     <addaction name="actionHistogram"/>
+    <addaction name="actionMorph"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -264,6 +265,11 @@
   <action name="actionHistogram">
    <property name="text">
     <string>Histogram</string>
+   </property>
+  </action>
+  <action name="actionMorph">
+   <property name="text">
+    <string>Operacje morfologiczne</string>
    </property>
   </action>
  </widget>

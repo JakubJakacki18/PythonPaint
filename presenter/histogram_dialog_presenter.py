@@ -1,6 +1,6 @@
 from PyQt6.QtGui import QImage
 from model.image import Image
-from utils.histogram_operation import ColorChannel
+from utils.enums.color_channel import ColorChannel
 from utils.image_service import ImageService
 from view.histogram_dialog import HistogramDialog
 

@@ -1,10 +1,8 @@
-from unittest import case
-
 import numpy as np
 from PyQt6.QtGui import QImage
 
 from model.image import Image
-from utils.image_filter_operation import ImageFilterOperation
+from utils.enums.image_filter_operation import ImageFilterOperation
 from utils.image_service import ImageService
 from view.filter_dialog import FilterDialog
 

@@ -5,7 +5,7 @@ from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox
 from matplotlib import pyplot as plt
 
-from utils.histogram_operation import ColorChannel
+from utils.enums.color_channel import ColorChannel
 from view.histogram_dialog_ui import Ui_HistogramDialog
 
 
