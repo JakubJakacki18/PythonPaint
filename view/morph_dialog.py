@@ -22,13 +22,15 @@ class MorphDialog(QDialog, Ui_MorphDialog):
         self.imagePreviewWidget = uic.loadUi("view/image_preview_widget.ui")
         self.imageFrame.layout().addWidget(self.imagePreviewWidget)
         self.current_image = None
-
+        self.current_operation = MorphOperation.DILATION
         self.radio_buttons = {
             self.dilatationButton: MorphOperation.DILATION,
             self.erosionButton: MorphOperation.EROSION,
             self.hitOrMissButton: MorphOperation.HIT_OR_MISS,
             self.closingButton: MorphOperation.CLOSING,
             self.openingButton: MorphOperation.OPENING,
+            self.thinningButton: MorphOperation.THINNING,
+            self.thickeningButton: MorphOperation.THICKENING,
         }
 
         self.buttonBox.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(
@@ -53,6 +55,7 @@ class MorphDialog(QDialog, Ui_MorphDialog):
         self.imagePreviewWidget.originalImage.setPixmap(pixmap)
 
     def on_radio_button_clicked(self, operation: MorphOperation):
+        self.current_operation = operation
         new_image = self.presenter.apply_filter(operation, self.matrix)
         self.update_edited_image(new_image)
 
@@ -88,6 +91,7 @@ class MorphDialog(QDialog, Ui_MorphDialog):
 
     def on_spinbox_changed(self):
         self.matrix = self._get_matrix_values()
+        self.on_radio_button_clicked(self.current_operation)
 
     def _get_matrix_values(self):
         return [[spin.value() for spin in row] for row in self.doubleSpinBoxes]

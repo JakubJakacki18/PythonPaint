@@ -87,6 +87,20 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QRadioButton" name="thickeningButton">
+              <property name="text">
+               <string>Pogrubianie</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="thinningButton">
+              <property name="text">
+               <string>Pocienianie</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>

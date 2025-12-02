@@ -338,22 +338,40 @@ class ImageService:
     def erosion(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
         mask = kernel == 1
-        return np.all(windows[:, :, mask] == 255, axis=-1).astype(np.uint8)  * 255
+        return np.all(windows[:, :, mask] == 255, axis=-1).astype(np.uint8) * 255
 
     @staticmethod
-    def dilation(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+    def dilatation(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
         mask = kernel == 1
-        return np.any(windows[:, :, mask] == 255, axis=-1).astype(np.uint8)  * 255
+        return np.any(windows[:, :, mask] == 255, axis=-1).astype(np.uint8) * 255
 
     @staticmethod
-    def hitOrMiss(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        pass
+    def hit_or_miss(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
+
+        mask_obj = kernel == 1
+        mask_bg = kernel == 0
+
+        cond_obj = np.all(windows[:, :, mask_obj] == 255, axis=-1)
+        cond_bg = np.all(windows[:, :, mask_bg] == 0, axis=-1)
+
+        return (cond_obj & cond_bg).astype(np.uint8) * 255
 
     @staticmethod
     def opening(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        return ImageService.dilation(ImageService.erosion(channel, kernel), kernel)
+        return ImageService.dilatation(ImageService.erosion(channel, kernel), kernel)
 
     @staticmethod
     def closing(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        return ImageService.erosion(ImageService.dilation(channel, kernel), kernel)
+        return ImageService.erosion(ImageService.dilatation(channel, kernel), kernel)
+
+    @staticmethod
+    def thinning(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        return (channel & (255 - ImageService.hit_or_miss(channel, kernel))).astype(
+            np.uint8
+        )
+
+    @staticmethod
+    def thickening(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+        return (channel | ImageService.hit_or_miss(channel, kernel)).astype(np.uint8)

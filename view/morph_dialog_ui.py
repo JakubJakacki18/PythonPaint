@@ -55,6 +55,12 @@ class Ui_MorphDialog(object):
         self.hitOrMissButton = QtWidgets.QRadioButton(parent=self.frame_4)
         self.hitOrMissButton.setObjectName("hitOrMissButton")
         self.verticalLayout_3.addWidget(self.hitOrMissButton)
+        self.thickeningButton = QtWidgets.QRadioButton(parent=self.frame_4)
+        self.thickeningButton.setObjectName("thickeningButton")
+        self.verticalLayout_3.addWidget(self.thickeningButton)
+        self.thinningButton = QtWidgets.QRadioButton(parent=self.frame_4)
+        self.thinningButton.setObjectName("thinningButton")
+        self.verticalLayout_3.addWidget(self.thinningButton)
         self.verticalLayout_2.addWidget(self.frame_4)
         self.dimensionFrame = QtWidgets.QFrame(parent=self.frame_2)
         self.dimensionFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
@@ -106,6 +112,8 @@ class Ui_MorphDialog(object):
         self.openingButton.setText(_translate("MorphDialog", "Otwarcie"))
         self.closingButton.setText(_translate("MorphDialog", "Domknięcie"))
         self.hitOrMissButton.setText(_translate("MorphDialog", "Hit-or-miss"))
+        self.thickeningButton.setText(_translate("MorphDialog", "Pogrubianie"))
+        self.thinningButton.setText(_translate("MorphDialog", "Pocienianie"))
         self.dimensionLabel.setText(_translate("MorphDialog", "Wymiar:"))
 
 

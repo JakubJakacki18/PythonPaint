@@ -25,10 +25,12 @@ class MorphDialogPresenter:
 
         operation_dict = {
             operation.EROSION: ImageService.erosion,
-            operation.DILATION: ImageService.dilation,
+            operation.DILATION: ImageService.dilatation,
             operation.OPENING: ImageService.opening,
             operation.CLOSING: ImageService.closing,
-            operation.HIT_OR_MISS: ImageService.hitOrMiss,
+            operation.HIT_OR_MISS: ImageService.hit_or_miss,
+            operation.THINNING: ImageService.thinning,
+            operation.THICKENING: ImageService.thickening,
         }
         custom_matrix = np.array(matrix, dtype=np.float32)
         new_red_channel = operation_dict[operation](red_channel, custom_matrix)
