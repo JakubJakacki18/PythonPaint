@@ -338,13 +338,13 @@ class ImageService:
     def erosion(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
         mask = kernel == 1
-        return np.all(windows[:, :, mask] == 1, axis=-1).astype(np.uint8)
+        return np.all(windows[:, :, mask] == 255, axis=-1).astype(np.uint8)  * 255
 
     @staticmethod
     def dilation(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         windows = ImageService.sliding_window_view(channel, kernel, mode="constant")
         mask = kernel == 1
-        return np.any(windows[:, :, mask] == 1, axis=-1).astype(np.uint8)
+        return np.any(windows[:, :, mask] == 255, axis=-1).astype(np.uint8)  * 255
 
     @staticmethod
     def hitOrMiss(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
@@ -352,8 +352,8 @@ class ImageService:
 
     @staticmethod
     def opening(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        pass
+        return ImageService.dilation(ImageService.erosion(channel, kernel), kernel)
 
     @staticmethod
     def closing(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        pass
+        return ImageService.erosion(ImageService.dilation(channel, kernel), kernel)

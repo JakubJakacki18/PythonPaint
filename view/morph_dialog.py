@@ -41,11 +41,10 @@ class MorphDialog(QDialog, Ui_MorphDialog):
                 partial(self.on_radio_button_clicked, operation)
             )
 
-        self.dimensionSpinBox.valueChanged.connect(self.set_dimensions)
         self.doubleSpinBoxes: list[list[QDoubleSpinBox]] = []
         self.set_dimensions()
-        self.matrix = None
-        self.dimensionFrame.hide()
+        self.matrix = self._get_matrix_values()
+        self.dimensionSpinBox.valueChanged.connect(self.set_dimensions)
 
     def set_images(self, image):
         self.current_image = image
@@ -54,13 +53,6 @@ class MorphDialog(QDialog, Ui_MorphDialog):
         self.imagePreviewWidget.originalImage.setPixmap(pixmap)
 
     def on_radio_button_clicked(self, operation: MorphOperation):
-        # if operation == MorphOperation.CUSTOM:
-        #     self.dimensionFrame.show()
-        # else:
-        #     self.dimensionFrame.hide()
-
-        self.dimensionFrame.show()
-
         new_image = self.presenter.apply_filter(operation, self.matrix)
         self.update_edited_image(new_image)
 
@@ -71,10 +63,8 @@ class MorphDialog(QDialog, Ui_MorphDialog):
 
     def set_dimensions(self):
         dimension = self.dimensionSpinBox.value()
-
         for child in self.spinBoxGridPlaceholderFrame.findChildren(QDoubleSpinBox):
             child.deleteLater()
-
         old_layout = self.spinBoxGridPlaceholderFrame.layout()
         if old_layout:
             QWidget().setLayout(old_layout)

@@ -1,3 +1,4 @@
+import numpy as np
 from PyQt6.QtGui import QImage
 
 from model.image import Image
@@ -29,7 +30,8 @@ class MorphDialogPresenter:
             operation.CLOSING: ImageService.closing,
             operation.HIT_OR_MISS: ImageService.hitOrMiss,
         }
-        new_red_channel = operation_dict[operation](red_channel, matrix)
+        custom_matrix = np.array(matrix, dtype=np.float32)
+        new_red_channel = operation_dict[operation](red_channel, custom_matrix)
         new_arr = ImageService.convert_to_3d_array(new_red_channel)
         new_image = QImage(
             new_arr.data, width, height, 3 * width, QImage.Format.Format_RGB888
