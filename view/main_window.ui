@@ -203,8 +203,16 @@
     <addaction name="actionHistogram"/>
     <addaction name="actionMorph"/>
    </widget>
+   <widget class="QMenu" name="menuAdvancedDraw">
+    <property name="title">
+     <string>Zaawansowane rysowanie</string>
+    </property>
+    <addaction name="actionDrawPolygon"/>
+    <addaction name="actionDrawBezierCurve"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuAdvancedDraw"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -270,6 +278,16 @@
   <action name="actionMorph">
    <property name="text">
     <string>Operacje morfologiczne</string>
+   </property>
+  </action>
+  <action name="actionDrawBezierCurve">
+   <property name="text">
+    <string>Krzywa Bezier</string>
+   </property>
+  </action>
+  <action name="actionDrawPolygon">
+   <property name="text">
+    <string>Wielokąty</string>
    </property>
   </action>
  </widget>

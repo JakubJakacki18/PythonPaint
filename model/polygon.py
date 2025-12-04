@@ -1,0 +1,12 @@
+from typing import List
+
+from model.pen import Pen
+from model.point import Point
+from model.shape import Shape
+
+
+class Polygon(Shape):
+    points: List[Point]
+
+    def __init__(self, pen: Pen):
+        super().__init__(pen)

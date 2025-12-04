@@ -3,8 +3,10 @@ import os
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog
 
+from model.bezier_curve import BezierCurve
 from model.color_model import ColorModel
 from model.image import Image
+from model.polygon import Polygon
 from utils.commands import (
     InvokerQueue,
     ImportCommand,
@@ -13,11 +15,13 @@ from utils.commands import (
     OpenFileCommand,
 )
 from utils.pnm_importer import PnmFormat
+from view.bezier_curve_dialog import BezierCurveDialog
 from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
 from view.histogram_dialog import HistogramDialog
 from view.morph_dialog import MorphDialog
 from view.rgb_transformation_dialog import RgbTransformationDialog
+from .bezier_curve_dialog_presenter import BezierCurveDialogPresenter
 from .binarization_dialog_presenter import BinarizationDialogPresenter
 from .color_picker_dialog_presenter import ColorPickerDialogPresenter
 from view.color_dialog import ColorDialog
@@ -29,6 +33,7 @@ from utils.enums.tools import Tools
 from .filter_dialog_presenter import FilterDialogPresenter
 from .histogram_dialog_presenter import HistogramDialogPresenter
 from .morph_dialog_presenter import MorphDialogPresenter
+from .polygon_dialog_presenter import PolygonDialogPresenter
 from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
@@ -194,6 +199,23 @@ class Presenter:
         dialog = MorphDialog(morph_presenter)
         morph_presenter.view = dialog
         morph_presenter.init_images()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def draw_polygon(self):
+        # polygon = Polygon(self.current_pen)
+        # polygon_presenter = PolygonDialogPresenter(polygon, None)
+        # dialog = PolygonDialog(polygon_presenter)
+        # polygon_presenter.view = dialog
+        # if dialog.exec() == QDialog.DialogCode.Accepted:
+        #     pass
+        pass
+
+    def draw_bezier_curve(self):
+        bezier_curve = BezierCurve(self.current_pen)
+        bezier_curve_presenter = BezierCurveDialogPresenter(bezier_curve, None)
+        dialog = BezierCurveDialog(bezier_curve_presenter)
+        bezier_curve_presenter.view = dialog
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

@@ -69,6 +69,10 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionHistogram.triggered.connect(presenter.histogram_image)
         self.actionMorph.triggered.connect(presenter.morph_image)
 
+        # ZAAWANSOWANE RYSOWANIE
+        self.actionDrawBezierCurve.triggered.connect(presenter.draw_bezier_curve)
+        self.actionDrawPolygon.triggered.connect(presenter.draw_polygon)
+
         self.colorButton.clicked.connect(presenter.set_color)
         self.set_color_button(0, 0, 0)
 

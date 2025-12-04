@@ -94,6 +94,8 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         self.menuEdit = QtWidgets.QMenu(parent=self.menubar)
         self.menuEdit.setObjectName("menuEdit")
+        self.menuAdvancedDraw = QtWidgets.QMenu(parent=self.menubar)
+        self.menuAdvancedDraw.setObjectName("menuAdvancedDraw")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -124,6 +126,10 @@ class Ui_MainWindow(object):
         self.actionHistogram.setObjectName("actionHistogram")
         self.actionMorph = QtGui.QAction(parent=MainWindow)
         self.actionMorph.setObjectName("actionMorph")
+        self.actionDrawBezierCurve = QtGui.QAction(parent=MainWindow)
+        self.actionDrawBezierCurve.setObjectName("actionDrawBezierCurve")
+        self.actionDrawPolygon = QtGui.QAction(parent=MainWindow)
+        self.actionDrawPolygon.setObjectName("actionDrawPolygon")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addAction(self.actionExport)
@@ -135,8 +141,11 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionBinarization)
         self.menuEdit.addAction(self.actionHistogram)
         self.menuEdit.addAction(self.actionMorph)
+        self.menuAdvancedDraw.addAction(self.actionDrawPolygon)
+        self.menuAdvancedDraw.addAction(self.actionDrawBezierCurve)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
+        self.menubar.addAction(self.menuAdvancedDraw.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -149,6 +158,7 @@ class Ui_MainWindow(object):
         self.textButton.setText(_translate("MainWindow", "Tekst"))
         self.menuFile.setTitle(_translate("MainWindow", "Plik"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edycja"))
+        self.menuAdvancedDraw.setTitle(_translate("MainWindow", "Zaawansowane rysowanie"))
         self.actionOpen.setText(_translate("MainWindow", "Otwórz"))
         self.actionClose.setText(_translate("MainWindow", "Zakończ"))
         self.actionSave.setText(_translate("MainWindow", "Zapisz"))
@@ -162,6 +172,8 @@ class Ui_MainWindow(object):
         self.actionBinarization.setText(_translate("MainWindow", "Binaryzacja"))
         self.actionHistogram.setText(_translate("MainWindow", "Histogram"))
         self.actionMorph.setText(_translate("MainWindow", "Operacje morfologiczne"))
+        self.actionDrawBezierCurve.setText(_translate("MainWindow", "Krzywa Bezier"))
+        self.actionDrawPolygon.setText(_translate("MainWindow", "Wielokąty"))
 from view.canvas_widget import CanvasWidget
 
 
