@@ -31,6 +31,11 @@
         <property name="frameShadow">
          <enum>QFrame::Shadow::Raised</enum>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="BezierCanvasWidget" name="canvasPlaceholder" native="true"/>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -149,6 +154,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BezierCanvasWidget</class>
+   <extends>QWidget</extends>
+   <header>view.bezier_canvas_widget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

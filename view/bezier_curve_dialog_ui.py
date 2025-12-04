@@ -25,6 +25,11 @@ class Ui_BezierCurveDialog(object):
         self.canvasFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.canvasFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.canvasFrame.setObjectName("canvasFrame")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.canvasFrame)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.canvasPlaceholder = BezierCanvasWidget(parent=self.canvasFrame)
+        self.canvasPlaceholder.setObjectName("canvasPlaceholder")
+        self.verticalLayout_4.addWidget(self.canvasPlaceholder)
         self.horizontalLayout.addWidget(self.canvasFrame)
         self.dataFrame = QtWidgets.QFrame(parent=self.frame)
         self.dataFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
@@ -85,6 +90,8 @@ class Ui_BezierCurveDialog(object):
         self.drawedPointsFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.drawedPointsFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.drawedPointsFrame.setObjectName("drawedPointsFrame")
+        self.gridLayout = QtWidgets.QGridLayout(self.drawedPointsFrame)
+        self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout_3.addWidget(self.drawedPointsFrame)
         self.verticalLayout_2.addWidget(self.pointsFrame)
         self.horizontalLayout.addWidget(self.dataFrame)
@@ -105,6 +112,7 @@ class Ui_BezierCurveDialog(object):
         BezierCurveDialog.setWindowTitle(_translate("BezierCurveDialog", "Dialog"))
         self.levelLabel.setText(_translate("BezierCurveDialog", "Stopień n:"))
         self.pointsLabel.setText(_translate("BezierCurveDialog", "Punkty:"))
+from view.bezier_canvas_widget import BezierCanvasWidget
 
 
 if __name__ == "__main__":

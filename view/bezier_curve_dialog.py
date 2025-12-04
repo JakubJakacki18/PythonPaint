@@ -16,6 +16,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         self.spin_box_y = []
 
         self.on_level_spin_box_changed()
+
     #
     # def on_level_spin_box_changed(self):
     #     current_value = self.levelSpinBox.value()
@@ -61,7 +62,6 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         if layout is None:
             layout = QGridLayout(self.drawedPointsFrame)
 
-
         if new_value > old_value:
             for row in range(old_value, new_value):
                 label_x = QLabel(f"x{row}:")
@@ -80,6 +80,8 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
                 self.spin_box_x.append(spin_x)
                 self.spin_box_y.append(spin_y)
 
+                spin_x.valueChanged.connect(self.on_spinbox_changed)
+                spin_y.valueChanged.connect(self.on_spinbox_changed)
 
         elif new_value < old_value:
             for row in range(new_value, old_value):
@@ -98,7 +100,20 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
                 if item_y_label:
                     item_y_label.widget().deleteLater()
 
+        self.on_spinbox_changed()
+
     def _get_matrix_values(self):
         combined_spin_boxes = zip(self.spin_box_x, self.spin_box_y)
-        return[(spix_x.value, spix_y.value) for spix_x, spix_y in combined_spin_boxes]
+        return [
+            (spix_x.value(), spix_y.value()) for spix_x, spix_y in combined_spin_boxes
+        ]
 
+    def on_spinbox_changed(self):
+        self.presenter.update_bezier_curve(self._get_matrix_values())
+        self.canvasPlaceholder.update()
+
+    def update_spin_box_values(self):
+        points = self.presenter.get_points()
+        for index, point in enumerate(points):
+            self.spin_box_x[index].setValue(int(point.x))
+            self.spin_box_y[index].setValue(int(point.y))
