@@ -4,30 +4,12 @@ from PyQt6.QtCore import Qt, QPointF, QRect
 from model.image import Image
 from model.point import Point
 from utils.draw_map import DRAW_MAP
+from view.base_canvas_widget import BaseCanvasWidget
 
 
-class CanvasWidget(QtWidgets.QWidget):
+class CanvasWidget(BaseCanvasWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(Qt.WidgetAttribute.WA_StaticContents)
-        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        self.setMouseTracking(True)
-        self.presenter = None
-
-    def mousePressEvent(self, event: QtGui.QMouseEvent):
-        pos = Point(event.position().x(), event.position().y())
-        if self.presenter:
-            self.presenter.handle_mouse_press(pos)
-
-    def mouseMoveEvent(self, event: QtGui.QMouseEvent):
-        pos = Point(event.position().x(), event.position().y())
-        if self.presenter:
-            self.presenter.handle_mouse_move(pos)
-
-    def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
-        pos = Point(event.position().x(), event.position().y())
-        if self.presenter:
-            self.presenter.handle_mouse_release()
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -43,9 +25,3 @@ class CanvasWidget(QtWidgets.QWidget):
                 width=x2-x1
                 height=y2-y1
                 painter.drawRect(QRect(int(x1), int(y1), int(width), int(height)))
-
-    def keyPressEvent(self, event: QtGui.QKeyEvent):
-        print("Kod klawisza:", event.key())
-        print("Znak:", event.text())
-        if self.presenter:
-            self.presenter.handle_key_press(event)

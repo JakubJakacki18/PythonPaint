@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from model.pen import Pen
 from model.point import Point
@@ -10,3 +10,6 @@ class BezierCurve(Shape):
 
     def __init__(self, pen: Pen):
         super().__init__(pen)
+
+    def get_points(self) -> Tuple[Point,...]:
+        return tuple(self.points)
