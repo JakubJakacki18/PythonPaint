@@ -14,8 +14,11 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
 
         self.spin_box_x = []
         self.spin_box_y = []
-
+        self.is_loading_from_json = False
         self.on_level_spin_box_changed()
+
+        self.saveJsonButton.clicked.connect(self.presenter.save_json_file)
+        self.loadJsonButton.clicked.connect(self.presenter.load_json_file)
 
     #
     # def on_level_spin_box_changed(self):
@@ -99,8 +102,8 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
 
                 if item_y_label:
                     item_y_label.widget().deleteLater()
-
-        self.on_spinbox_changed()
+        if not self.is_loading_from_json:
+            self.on_spinbox_changed()
 
     def _get_matrix_values(self):
         combined_spin_boxes = zip(self.spin_box_x, self.spin_box_y)
@@ -117,3 +120,11 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         for index, point in enumerate(points):
             self.spin_box_x[index].setValue(int(point.x))
             self.spin_box_y[index].setValue(int(point.y))
+        self.canvasPlaceholder.update()
+
+    def on_load_json_file(self):
+        self.is_loading_from_json = True
+        points = self.presenter.get_points()
+        self.levelSpinBox.setValue(len(points))
+        self.update_spin_box_values()
+        self.is_loading_from_json = False

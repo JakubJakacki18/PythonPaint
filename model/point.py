@@ -27,3 +27,10 @@ class Point:
         except ZeroDivisionError:
             return self
         return Point(new_x, new_y)
+
+    def point_to_dict(self) -> dict:
+        return {"x": self.x, "y": self.y}
+
+    @classmethod
+    def dict_to_point(cls, dictionary) -> "Point":
+        return Point(dictionary["x"], dictionary["y"])

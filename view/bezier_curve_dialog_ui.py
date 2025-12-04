@@ -94,6 +94,19 @@ class Ui_BezierCurveDialog(object):
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout_3.addWidget(self.drawedPointsFrame)
         self.verticalLayout_2.addWidget(self.pointsFrame)
+        self.jsonButtonsFrame = QtWidgets.QFrame(parent=self.dataFrame)
+        self.jsonButtonsFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.jsonButtonsFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.jsonButtonsFrame.setObjectName("jsonButtonsFrame")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.jsonButtonsFrame)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.loadJsonButton = QtWidgets.QPushButton(parent=self.jsonButtonsFrame)
+        self.loadJsonButton.setObjectName("loadJsonButton")
+        self.horizontalLayout_3.addWidget(self.loadJsonButton)
+        self.saveJsonButton = QtWidgets.QPushButton(parent=self.jsonButtonsFrame)
+        self.saveJsonButton.setObjectName("saveJsonButton")
+        self.horizontalLayout_3.addWidget(self.saveJsonButton)
+        self.verticalLayout_2.addWidget(self.jsonButtonsFrame)
         self.horizontalLayout.addWidget(self.dataFrame)
         self.verticalLayout.addWidget(self.frame)
         self.buttonBox = QtWidgets.QDialogButtonBox(parent=BezierCurveDialog)
@@ -112,6 +125,8 @@ class Ui_BezierCurveDialog(object):
         BezierCurveDialog.setWindowTitle(_translate("BezierCurveDialog", "Dialog"))
         self.levelLabel.setText(_translate("BezierCurveDialog", "Stopień n:"))
         self.pointsLabel.setText(_translate("BezierCurveDialog", "Punkty:"))
+        self.loadJsonButton.setText(_translate("BezierCurveDialog", "Wczytaj JSON"))
+        self.saveJsonButton.setText(_translate("BezierCurveDialog", "Zapisz JSON"))
 from view.bezier_canvas_widget import BezierCanvasWidget
 
 

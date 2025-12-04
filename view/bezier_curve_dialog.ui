@@ -136,6 +136,32 @@
            </layout>
           </widget>
          </item>
+         <item>
+          <widget class="QFrame" name="jsonButtonsFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QPushButton" name="loadJsonButton">
+              <property name="text">
+               <string>Wczytaj JSON</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="saveJsonButton">
+              <property name="text">
+               <string>Zapisz JSON</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
