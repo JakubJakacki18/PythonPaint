@@ -1,5 +1,6 @@
 from functools import partial
 
+from PyQt6.QtCore import QSignalBlocker
 from PyQt6.QtWidgets import QDialog, QLabel, QSpinBox, QWidget, QGridLayout
 
 from utils.enums.advanced_tools import AdvancedTools
@@ -17,7 +18,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
 
         self.spin_box_x = []
         self.spin_box_y = []
-        self.is_loading_from_json = False
+        self.is_all_spinbox_values_known = False
         self.on_level_spin_box_changed()
 
         self.saveJsonButton.clicked.connect(self.presenter.save_json_file)
@@ -34,7 +35,9 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
             print(radio_button.text(), tool)
             radio_button.clicked.connect(partial(self.on_radio_button_clicked, tool))
 
-    def on_level_spin_box_changed(self):
+    def on_level_spin_box_changed(
+        self,
+    ):
         new_value = self.levelSpinBox.value()
         old_value = len(self.spin_box_x)
 
@@ -79,7 +82,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
 
                 if item_y_label:
                     item_y_label.widget().deleteLater()
-        if not self.is_loading_from_json:
+        if not self.is_all_spinbox_values_known:
             self.on_spinbox_changed()
 
     def _get_matrix_values(self):
@@ -95,16 +98,20 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
     def update_spin_box_values(self):
         points = self.presenter.get_points()
         for index, point in enumerate(points):
-            self.spin_box_x[index].setValue(int(point.x))
-            self.spin_box_y[index].setValue(int(point.y))
+            with (
+                QSignalBlocker(self.spin_box_x[index]),
+                QSignalBlocker(self.spin_box_y[index]),
+            ):
+                self.spin_box_x[index].setValue(int(point.x))
+                self.spin_box_y[index].setValue(int(point.y))
         self.canvasPlaceholder.update()
 
-    def on_load_json_file(self):
-        self.is_loading_from_json = True
+    def load_values_from_presenter(self):
+        self.is_all_spinbox_values_known = True
         points = self.presenter.get_points()
         self.levelSpinBox.setValue(len(points))
         self.update_spin_box_values()
-        self.is_loading_from_json = False
+        self.is_all_spinbox_values_known = False
 
     def on_radio_button_clicked(self, tool: AdvancedTools):
         self.current_tool = tool

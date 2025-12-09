@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QPen
 
 from model.point import Point
+from utils.enums.advanced_tools import AdvancedTools
 from view.base_canvas_widget import BaseCanvasWidget
 
 
@@ -10,7 +11,8 @@ class BezierCanvasWidget(BaseCanvasWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def bezier_point(self, t, points):
+    @staticmethod
+    def _bezier_point(t, points):
         n = len(points)
         pts = points.copy()
 
@@ -34,6 +36,12 @@ class BezierCanvasWidget(BaseCanvasWidget):
         points = self.presenter.get_points()
         qpoints = [QPointF(point.x, point.y) for point in points]
 
+        if self.presenter.current_tool == AdvancedTools.ROTATE and (
+            point := self.presenter.rotate_axis
+        ):
+            painter.setPen(QPen(Qt.GlobalColor.blue, 6))
+            painter.drawPoint(QPointF(point.x, point.y))
+
         painter.setPen(QPen(Qt.GlobalColor.gray, 1, Qt.PenStyle.DashLine))
         for i in range(len(qpoints) - 1):
             painter.drawLine(qpoints[i], qpoints[i + 1])
@@ -44,12 +52,12 @@ class BezierCanvasWidget(BaseCanvasWidget):
 
         painter.setPen(QPen(Qt.GlobalColor.blue, 2))
         if qpoints:
-            prev = self.bezier_point(0, qpoints)
+            prev = BezierCanvasWidget._bezier_point(0, qpoints)
             steps = 200
 
             for i in range(1, steps + 1):
                 t = i / steps
-                p = self.bezier_point(t, qpoints)
+                p = BezierCanvasWidget._bezier_point(t, qpoints)
                 painter.drawLine(prev, p)
                 prev = p
 

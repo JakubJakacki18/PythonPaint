@@ -4,6 +4,7 @@ from typing import List, Tuple
 from model.pen import Pen
 from model.point import Point
 from model.shape import Shape
+from typing import List, Tuple, Union
 
 
 class BezierCurve(Shape):
@@ -14,8 +15,6 @@ class BezierCurve(Shape):
 
     def get_points(self) -> Tuple[Point, ...]:
         return tuple(self.points)
-
-    from typing import List, Tuple, Union
 
     def set_points(self, points: Union[List[Point], List[Tuple[int, int]]]) -> None:
         if not points:
@@ -56,3 +55,38 @@ class BezierCurve(Shape):
     def move_by(self, point: Point):
         for p in self.points:
             p += point
+
+    def resize_by(self, point: Point):
+        pass
+
+    def rotate_by(self, angle: float, rotate_axis: Point):
+        """Rotate all control points around the curve's center by the given angle"""
+        if not self.points:
+            return
+
+        import math
+
+        # Convert angle to radians
+        angle_rad = math.radians(angle)
+        cos_angle = math.cos(angle_rad)
+        sin_angle = math.sin(angle_rad)
+
+        # Rotate each point around the center
+        rotated_points = []
+        for point in self.points:
+            # Translate point to origin
+            x = point.x - rotate_axis.x
+            y = point.y - rotate_axis.y
+
+            # Apply rotation matrix
+            new_x = x * cos_angle - y * sin_angle
+            new_y = x * sin_angle + y * cos_angle
+
+            # Translate back
+            new_x += rotate_axis.x
+            new_y += rotate_axis.y
+
+            rotated_points.append(Point(new_x, new_y))
+
+        # Update the points
+        self.points = rotated_points
