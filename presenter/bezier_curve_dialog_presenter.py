@@ -124,7 +124,9 @@ class BezierCurveDialogPresenter:
         self.start_position = current_point
 
     def _handle_scale_moved(self, current_point: Point):
-        pass
+        if self.start_position is None:
+            return
+        self.model.resize_by(current_point)
 
     def _handle_rotate_moved(self, current_point: Point):
         if not self.rotate_axis or not self.start_operation:

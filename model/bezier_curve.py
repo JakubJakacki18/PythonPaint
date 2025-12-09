@@ -57,7 +57,51 @@ class BezierCurve(Shape):
             p += point
 
     def resize_by(self, point: Point):
-        pass
+        x_min, y_min, x_max, y_max = self._calculate_min_max_values()
+
+        current_width = x_max - x_min
+        current_height = y_max - y_min
+
+        if current_width == 0 and current_height == 0:
+            return
+
+        new_width = point.x - x_min
+        new_height = point.y - y_min
+
+        scale_x = new_width / current_width if current_width != 0 else 1
+        scale_y = new_height / current_height if current_height != 0 else 1
+
+        resized_points = []
+        for p in self.points:
+
+            resized_points.append(
+                BezierCurve._scaling_of_point(p, x_min, y_min, scale_x, scale_y)
+            )
+        self.points = resized_points
+
+    @staticmethod
+    def _scaling_of_point(
+        point: Point, x: float, y: float, scale_x: float, scale_y: float
+    ) -> Point:
+        dx = point.x - x
+        dy = point.y - y
+
+        new_x = x + dx * scale_x
+        new_y = y + dy * scale_y
+        return Point(new_x, new_y)
+
+    def scale_by(self, scale_factor: float):
+        if scale_factor == 0:
+            return
+        x_min, y_min, x_max, y_max = self._calculate_min_max_values()
+        scaled_points = []
+        for p in self.points:
+            scaled_points.append(
+                BezierCurve._scaling_of_point(
+                    p, x_min, y_min, scale_factor, scale_factor
+                )
+            )
+        self.points = scaled_points
 
     def rotate_by(self, angle: float, rotate_axis: Point):
         """Rotate all control points around the curve's center by the given angle"""
