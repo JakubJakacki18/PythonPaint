@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>492</height>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,6 +47,134 @@
          <enum>QFrame::Shadow::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QFrame" name="toolsFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="moveButton">
+              <property name="text">
+               <string>Przesunięcie</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QRadioButton" name="rotateButton">
+              <property name="text">
+               <string>Obrót</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="drawButton">
+              <property name="text">
+               <string>Rysowanie</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QRadioButton" name="scaleButton">
+              <property name="text">
+               <string>Skalowanie</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="transformFrame">
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="1" column="0">
+             <widget class="QLabel" name="rotateCoordinatesLabel">
+              <property name="text">
+               <string>Współrzędne obrotu:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="offsetYLabel">
+              <property name="text">
+               <string>Dy:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="offsetXLabel">
+              <property name="text">
+               <string>Dx:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QSpinBox" name="offsetYSpinBox">
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="offsetXSpinBox">
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QSpinBox" name="rotateCoordinatesYSpinBox">
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="degreeLabel">
+              <property name="text">
+               <string>Kąt:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="rotateCoordinatesXSpinBox">
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="scaleLabel">
+              <property name="text">
+               <string>Skala:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="degreeSpinBox">
+              <property name="maximum">
+               <number>359</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="scaleSpinBox"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <widget class="QFrame" name="levelFrame">
            <property name="sizePolicy">

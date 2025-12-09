@@ -1,5 +1,8 @@
+from functools import partial
+
 from PyQt6.QtWidgets import QDialog, QLabel, QSpinBox, QWidget, QGridLayout
 
+from utils.enums.advanced_tools import AdvancedTools
 from view.bezier_curve_dialog_ui import Ui_BezierCurveDialog
 
 
@@ -9,7 +12,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         self.setupUi(self)
         self.presenter = presenter
         self.canvasPlaceholder.presenter = presenter
-
+        self.current_tool = AdvancedTools.DRAW
         self.levelSpinBox.valueChanged.connect(self.on_level_spin_box_changed)
 
         self.spin_box_x = []
@@ -20,42 +23,16 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         self.saveJsonButton.clicked.connect(self.presenter.save_json_file)
         self.loadJsonButton.clicked.connect(self.presenter.load_json_file)
 
-    #
-    # def on_level_spin_box_changed(self):
-    #     current_value = self.levelSpinBox.value()
-    #
-    #
-    #     for child in self.drawedPointsFrame.findChildren(QWidget):
-    #         child.deleteLater()
-    #
-    #
-    #
-    #     old_layout = self.drawedPointsFrame.layout()
-    #     if old_layout:
-    #         QWidget().setLayout(old_layout)
-    #
-    #     layout = QGridLayout(self.drawedPointsFrame)
-    #
-    #
-    #     for row in range(current_value):
-    #         label_x = QLabel(f"x{row}: ")
-    #
-    #         spin_x = QSpinBox()
-    #         spin_x.setRange(0, 999999)
-    #         spin_x.setSingleStep(1)
-    #         self.spin_box_x.append(spin_x)
-    #
-    #         label_y = QLabel(f"y{row}: ")
-    #
-    #         spin_y = QSpinBox()
-    #         spin_y.setRange(0, 999999)
-    #         spin_y.setSingleStep(1)
-    #         self.spin_box_y.append(spin_y)
-    #
-    #         layout.addWidget(label_x, row, 0)
-    #         layout.addWidget(spin_x, row, 1)
-    #         layout.addWidget(label_y, row, 2)
-    #         layout.addWidget(spin_y, row, 3)
+        self.radio_buttons = {
+            self.drawButton: AdvancedTools.DRAW,
+            self.rotateButton: AdvancedTools.ROTATE,
+            self.scaleButton: AdvancedTools.SCALE,
+            self.moveButton: AdvancedTools.MOVE,
+        }
+
+        for radio_button, tool in self.radio_buttons.items():
+            print(radio_button.text(), tool)
+            radio_button.clicked.connect(partial(self.on_radio_button_clicked, tool))
 
     def on_level_spin_box_changed(self):
         new_value = self.levelSpinBox.value()
@@ -128,3 +105,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         self.levelSpinBox.setValue(len(points))
         self.update_spin_box_values()
         self.is_loading_from_json = False
+
+    def on_radio_button_clicked(self, tool: AdvancedTools):
+        self.current_tool = tool
+        self.presenter.on_tool_changed(tool)

@@ -2,6 +2,7 @@ from PyQt6 import QtGui
 from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QPen
 
+from model.point import Point
 from view.base_canvas_widget import BaseCanvasWidget
 
 
@@ -51,3 +52,8 @@ class BezierCanvasWidget(BaseCanvasWidget):
                 p = self.bezier_point(t, qpoints)
                 painter.drawLine(prev, p)
                 prev = p
+
+    def mousePressEvent(self, event: QtGui.QMouseEvent):
+        pos = Point(event.position().x(), event.position().y())
+        if self.presenter:
+            self.presenter.handle_mouse_press(pos, event.button())

@@ -37,3 +37,22 @@ class BezierCurve(Shape):
 
     def update_value_of(self, dragging_index: int, clicked_point: Point):
         self.points[dragging_index] = clicked_point
+
+    def contains(self, point: Point) -> bool:
+        x_min, y_min, x_max, y_max = self._calculate_min_max_values()
+        return x_min <= point.x <= x_max and y_min <= point.y <= y_max
+
+    def bounding_box(self) -> Tuple[float, float, float, float]:
+        return self._calculate_min_max_values()
+
+    def _calculate_min_max_values(self):
+        return (
+            min(p.x for p in self.points),
+            min(p.y for p in self.points),
+            max(p.x for p in self.points),
+            max(p.y for p in self.points),
+        )
+
+    def move_by(self, point: Point):
+        for p in self.points:
+            p += point
