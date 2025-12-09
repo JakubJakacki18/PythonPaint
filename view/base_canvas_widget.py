@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget
@@ -36,6 +34,5 @@ class BaseCanvasWidget(QWidget):
         if self.presenter:
             self.presenter.handle_key_press(event)
 
-    @abstractmethod
     def paintEvent(self, event: QtGui.QPaintEvent):
-        pass
+        raise NotImplementedError("paintEvent() musi być zaimplementowane.")

@@ -1,7 +1,7 @@
 import os
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog, QWidget
 
 from model.bezier_curve import BezierCurve
 from model.color_model import ColorModel
@@ -15,11 +15,13 @@ from utils.commands import (
     OpenFileCommand,
 )
 from utils.pnm_importer import PnmFormat
+from view.bezier_canvas_widget import BezierCanvasWidget
 from view.bezier_curve_dialog import BezierCurveDialog
 from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
 from view.histogram_dialog import HistogramDialog
 from view.morph_dialog import MorphDialog
+from view.polygon_canvas_widget import PolygonCanvasWidget
 from view.rgb_transformation_dialog import RgbTransformationDialog
 from .bezier_curve_dialog_presenter import BezierCurveDialogPresenter
 from .binarization_dialog_presenter import BinarizationDialogPresenter
@@ -33,7 +35,6 @@ from utils.enums.tools import Tools
 from .filter_dialog_presenter import FilterDialogPresenter
 from .histogram_dialog_presenter import HistogramDialogPresenter
 from .morph_dialog_presenter import MorphDialogPresenter
-from .polygon_dialog_presenter import PolygonDialogPresenter
 from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
@@ -203,18 +204,15 @@ class Presenter:
             pass
 
     def draw_polygon(self):
-        # polygon = Polygon(self.current_pen)
-        # polygon_presenter = PolygonDialogPresenter(polygon, None)
-        # dialog = PolygonDialog(polygon_presenter)
-        # polygon_presenter.view = dialog
-        # if dialog.exec() == QDialog.DialogCode.Accepted:
-        #     pass
-        pass
+        self.draw_advanced_shape(PolygonCanvasWidget)
 
     def draw_bezier_curve(self):
+        self.draw_advanced_shape(BezierCanvasWidget)
+
+    def draw_advanced_shape(self, canvas_widget):
         bezier_curve = BezierCurve(self.current_pen)
         bezier_curve_presenter = BezierCurveDialogPresenter(bezier_curve, None)
-        dialog = BezierCurveDialog(bezier_curve_presenter)
+        dialog = BezierCurveDialog(bezier_curve_presenter, canvas_widget)
         bezier_curve_presenter.view = dialog
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass

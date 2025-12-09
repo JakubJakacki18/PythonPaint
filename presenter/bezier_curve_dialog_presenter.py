@@ -96,6 +96,9 @@ class BezierCurveDialogPresenter:
 
     def _handle_left_rotate_pressed(self, clicked_point: Point):
         self.rotate_axis = clicked_point
+        self.view.set_rotate_axis_value(
+            int(self.rotate_axis.x), int(self.rotate_axis.y)
+        )
 
     def _handle_left_draw_pressed(self, clicked_point: Point):
         selected_point_index = self.model.find_point(clicked_point)
@@ -137,7 +140,7 @@ class BezierCurveDialogPresenter:
                 current_point.x - self.rotate_axis.x,
             )
         )
-        print(angle)
+        # print(angle)
         if self._last_rotation_angle is None:
             self._last_rotation_angle = angle
             return

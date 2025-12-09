@@ -31,11 +31,6 @@
         <property name="frameShadow">
          <enum>QFrame::Shadow::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="BezierCanvasWidget" name="canvasPlaceholder" native="true"/>
-         </item>
-        </layout>
        </widget>
       </item>
       <item>
@@ -99,38 +94,10 @@
             <enum>QFrame::Shadow::Raised</enum>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="1" column="0">
-             <widget class="QLabel" name="rotateCoordinatesLabel">
-              <property name="text">
-               <string>Współrzędne obrotu:</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <widget class="QLabel" name="offsetYLabel">
               <property name="text">
                <string>Dy:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="offsetXLabel">
-              <property name="text">
-               <string>Dx:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QSpinBox" name="offsetYSpinBox">
-              <property name="maximum">
-               <number>9999</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="offsetXSpinBox">
-              <property name="maximum">
-               <number>9999</number>
               </property>
              </widget>
             </item>
@@ -141,10 +108,10 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="degreeLabel">
-              <property name="text">
-               <string>Kąt:</string>
+            <item row="0" column="3">
+             <widget class="QSpinBox" name="offsetYSpinBox">
+              <property name="maximum">
+               <number>9999</number>
               </property>
              </widget>
             </item>
@@ -155,10 +122,17 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="scaleLabel">
               <property name="text">
                <string>Skala:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="degreeLabel">
+              <property name="text">
+               <string>Kąt:</string>
               </property>
              </widget>
             </item>
@@ -169,8 +143,49 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QSpinBox" name="scaleSpinBox"/>
+            <item row="0" column="0">
+             <widget class="QLabel" name="offsetXLabel">
+              <property name="text">
+               <string>Dx:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="offsetXSpinBox">
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="rotateCoordinatesLabel">
+              <property name="text">
+               <string>Współrzędne obrotu:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QDoubleSpinBox" name="scaleSpinBox">
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>10.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.500000000000000</double>
+              </property>
+              <property name="value">
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QPushButton" name="executeButton">
+              <property name="text">
+               <string>Wykonaj</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -308,14 +323,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>BezierCanvasWidget</class>
-   <extends>QWidget</extends>
-   <header>view.bezier_canvas_widget</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

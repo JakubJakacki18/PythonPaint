@@ -1,17 +1,23 @@
 from functools import partial
 
 from PyQt6.QtCore import QSignalBlocker
-from PyQt6.QtWidgets import QDialog, QLabel, QSpinBox, QWidget, QGridLayout
+from PyQt6.QtWidgets import QDialog, QLabel, QSpinBox, QWidget, QGridLayout, QVBoxLayout
 
+from model.point import Point
 from utils.enums.advanced_tools import AdvancedTools
 from view.bezier_curve_dialog_ui import Ui_BezierCurveDialog
 
 
 class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
-    def __init__(self, presenter, parent=None):
+    def __init__(self, presenter, canvas_class, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.presenter = presenter
+        self.canvasPlaceholder = canvas_class(self)
+        layout = QVBoxLayout(self.canvasFrame)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.canvasPlaceholder)
+
         self.canvasPlaceholder.presenter = presenter
         self.current_tool = AdvancedTools.DRAW
         self.levelSpinBox.valueChanged.connect(self.on_level_spin_box_changed)
@@ -116,3 +122,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
     def on_radio_button_clicked(self, tool: AdvancedTools):
         self.current_tool = tool
         self.presenter.on_tool_changed(tool)
+
+    def set_rotate_axis_value(self, rotate_x_value: int, rotate_y_value: int):
+        self.rotateCoordinatesXSpinBox.setValue(rotate_x_value)
+        self.rotateCoordinatesYSpinBox.setValue(rotate_y_value)
