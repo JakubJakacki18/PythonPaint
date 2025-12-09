@@ -21,6 +21,7 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
         self.canvasPlaceholder.presenter = presenter
         self.current_tool = AdvancedTools.DRAW
         self.levelSpinBox.valueChanged.connect(self.on_level_spin_box_changed)
+        self.executeButton.clicked.connect(self.execute_transition)
 
         self.spin_box_x = []
         self.spin_box_y = []
@@ -126,3 +127,29 @@ class BezierCurveDialog(QDialog, Ui_BezierCurveDialog):
     def set_rotate_axis_value(self, rotate_x_value: int, rotate_y_value: int):
         self.rotateCoordinatesXSpinBox.setValue(rotate_x_value)
         self.rotateCoordinatesYSpinBox.setValue(rotate_y_value)
+
+    def execute_transition(self):
+        offset_x = self.offsetXSpinBox.value()
+
+        if (offset_y := self.offsetYSpinBox.value()) or offset_x:
+            self.presenter.move_shape(Point(offset_x, offset_y))
+
+        if (scale_value := self.scaleSpinBox.value()) != 1:
+            self.presenter.scale_shape(scale_value)
+
+        rotate_axis = Point(
+            self.rotateCoordinatesXSpinBox.value(),
+            self.rotateCoordinatesYSpinBox.value(),
+        )
+        degree = self.degreeSpinBox.value()
+        if (rotate_axis.x > 0 or rotate_axis.y > 0) and degree:
+            self.presenter.rotate_shape(rotate_axis, degree)
+
+        self.canvasPlaceholder.update()
+        self.reset_spin_boxes()
+
+    def reset_spin_boxes(self):
+        self.offsetXSpinBox.setValue(0)
+        self.offsetYSpinBox.setValue(0)
+        self.scaleSpinBox.setValue(1)
+        self.degreeSpinBox.setValue(0)

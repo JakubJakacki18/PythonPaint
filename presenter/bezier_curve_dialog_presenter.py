@@ -158,3 +158,13 @@ class BezierCurveDialogPresenter:
 
     def handle_key_press(self, event):
         pass
+
+    def move_shape(self, d_point: Point):
+        self.model.move_by(d_point)
+
+    def rotate_shape(self, rotate_axis: Point, degree: int):
+        self.rotate_axis = rotate_axis
+        self.model.rotate_by(degree, self.rotate_axis)
+
+    def scale_shape(self, k_value: int):
+        self.model.scale_by(k_value)
