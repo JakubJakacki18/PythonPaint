@@ -21,6 +21,7 @@ from view.binary_dialog import BinaryDialog
 from view.filter_dialog import FilterDialog
 from view.histogram_dialog import HistogramDialog
 from view.morph_dialog import MorphDialog
+from view.pixel_analysis_dialog import PixelAnalysisDialog
 from view.polygon_canvas_widget import PolygonCanvasWidget
 from view.rgb_transformation_dialog import RgbTransformationDialog
 from .bezier_curve_dialog_presenter import BezierCurveDialogPresenter
@@ -35,6 +36,7 @@ from utils.enums.tools import Tools
 from .filter_dialog_presenter import FilterDialogPresenter
 from .histogram_dialog_presenter import HistogramDialogPresenter
 from .morph_dialog_presenter import MorphDialogPresenter
+from .pixel_analysis_presenter import PixelAnalysisPresenter
 from .rgb_transformation_dialog_presenter import RgbTransformationDialogPresenter
 
 
@@ -200,6 +202,13 @@ class Presenter:
         dialog = MorphDialog(morph_presenter)
         morph_presenter.view = dialog
         morph_presenter.init_images()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pass
+
+    def pixel_analysis_image(self):
+        pixel_analysis_presenter = PixelAnalysisPresenter(self.selected_shape, None)
+        dialog = PixelAnalysisDialog(pixel_analysis_presenter)
+        pixel_analysis_presenter.view = dialog
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pass
 

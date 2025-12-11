@@ -19,6 +19,15 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         self.selectPanel = uic.loadUi("view/select_panel_main_window.ui")
         self.currentPanel = None
 
+        self.action_that_requires_image = (
+            self.actionFilters,
+            self.actionRgbTransformation,
+            self.actionBinarization,
+            self.actionHistogram,
+            self.actionMorph,
+            self.actionColorArea,
+        )
+
         self.toggle_photo_edit_options_enabled(False)
         self.toggle_secondary_bar_frame(self.drawPanel)
         self.navFrame.setFixedHeight(self.navFrame.sizeHint().height())
@@ -66,7 +75,6 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
             presenter.rgb_transformation_image
         )
         self.actionBinarization.triggered.connect(presenter.binarize_image)
-        self.actionHistogram.triggered.connect(presenter.histogram_image)
         self.actionMorph.triggered.connect(presenter.morph_image)
 
         # ZAAWANSOWANE RYSOWANIE
@@ -75,6 +83,10 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.colorButton.clicked.connect(presenter.set_color)
         self.set_color_button(0, 0, 0)
+
+        # ANALIZUJ
+        self.actionHistogram.triggered.connect(presenter.histogram_image)
+        self.actionColorArea.triggered.connect(presenter.pixel_analysis_image)
 
     def refresh(self):
         self.canvasPlaceholder.update()
@@ -179,8 +191,5 @@ class View(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.canvasPlaceholder.set_image(image)
 
     def toggle_photo_edit_options_enabled(self, is_enabled: bool):
-        self.actionFilters.setEnabled(is_enabled)
-        self.actionRgbTransformation.setEnabled(is_enabled)
-        self.actionBinarization.setEnabled(is_enabled)
-        self.actionHistogram.setEnabled(is_enabled)
-        self.actionMorph.setEnabled(is_enabled)
+        for action_button in self.action_that_requires_image:
+            action_button.setEnabled(is_enabled)

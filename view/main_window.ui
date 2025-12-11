@@ -200,7 +200,6 @@
     <addaction name="actionRgbTransformation"/>
     <addaction name="actionFilters"/>
     <addaction name="actionBinarization"/>
-    <addaction name="actionHistogram"/>
     <addaction name="actionMorph"/>
    </widget>
    <widget class="QMenu" name="menuAdvancedDraw">
@@ -210,9 +209,17 @@
     <addaction name="actionDrawPolygon"/>
     <addaction name="actionDrawBezierCurve"/>
    </widget>
+   <widget class="QMenu" name="menuAnalysis">
+    <property name="title">
+     <string>Analiza</string>
+    </property>
+    <addaction name="actionHistogram"/>
+    <addaction name="actionColorArea"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuAdvancedDraw"/>
+   <addaction name="menuAnalysis"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -288,6 +295,11 @@
   <action name="actionDrawPolygon">
    <property name="text">
     <string>Wielokąty</string>
+   </property>
+  </action>
+  <action name="actionColorArea">
+   <property name="text">
+    <string>Pokrycie kolorem</string>
    </property>
   </action>
  </widget>

@@ -1,7 +1,8 @@
-from typing import Literal
+from typing import Literal, Tuple
 
 import numpy as np
 from PyQt6.QtGui import QImage
+from scipy.ndimage import generate_binary_structure, label
 
 from utils.enums.color_channel import ColorChannel
 
@@ -375,3 +376,128 @@ class ImageService:
     @staticmethod
     def thickening(channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         return (channel | ImageService.hit_or_miss(channel, kernel)).astype(np.uint8)
+
+    @staticmethod
+    def convert_to_hsv(arr: np.ndarray) -> np.ndarray:
+        img = arr.astype(np.float32)
+
+        # Rozdzielenie kanałów (bez kopiowania pamięci - widok)
+        r, g, b = img[..., 0], img[..., 1], img[..., 2]
+
+        # 2. Obliczenie Max (Value), Min i Delta
+        # Używamy np.maximum zamiast np.max dla szybkości na 3 kanałach
+        max_v = np.maximum(np.maximum(r, g), b)
+        min_v = np.minimum(np.minimum(r, g), b)
+        df = max_v - min_v
+
+        # 3. Obliczenie Hue (Barwa) - zakres 0-360
+        # Inicjalizacja zerami
+        h = np.zeros_like(max_v)
+
+        # Maska pikseli, gdzie delta > 0 (dla szarości h=0)
+        mask_df = df > 0
+
+        # Maski dla dominujących kanałów (tylko tam, gdzie kolor nie jest szary)
+        # Jeśli max_v == r -> (g - b) / df
+        mask_r = (max_v == r) & mask_df
+        h[mask_r] = (g[mask_r] - b[mask_r]) / df[mask_r]
+
+        # Jeśli max_v == g -> 2 + (b - r) / df
+        mask_g = (max_v == g) & (max_v != r) & mask_df
+        h[mask_g] = 2.0 + (b[mask_g] - r[mask_g]) / df[mask_g]
+
+        # Jeśli max_v == b -> 4 + (r - g) / df
+        mask_b = (max_v == b) & (max_v != r) & (max_v != g) & mask_df
+        h[mask_b] = 4.0 + (r[mask_b] - g[mask_b]) / df[mask_b]
+
+        # Przeskalowanie do stopni (x 60)
+        h *= 30.0
+
+        # Obsługa ujemnych wartości Hue (np. gdy g < b w przypadku r_max)
+        h[h < 0] += 180.0
+
+        # 4. Obliczenie Saturation (Nasycenie) - zakres 0-255
+        s = np.zeros_like(max_v)
+        # S = 0 jeśli V = 0, w przeciwnym razie S = delta / max_v
+        mask_v = max_v > 0
+        # Mnożymy * 255 aby uzyskać zakres 0-255
+        s[mask_v] = (df[mask_v] / max_v[mask_v]) * 255.0
+
+        # 5. Value (Jasność) - zakres 0-255
+        # Mamy już max_v, które jest w zakresie 0-255 (bo input był 0-255)
+        v = max_v
+
+        # 6. Złożenie kanałów z powrotem w jeden obraz
+        # Złożenie i rzutowanie na bezpieczny typ (np. float32 dla dalszych obliczeń
+        # lub uint8 jeśli chcemy wyświetlać, ale Hue wymaga >255, więc float jest bezpieczniejszy)
+
+        # Uwaga: H jest 0-360, więc nie zmieści się w uint8.
+        # Zwracamy jako float32, lub int16. Tu zostawiam float32 dla precyzji.
+        hsv_arr = np.stack((h, s, v), axis=-1)
+
+        return hsv_arr.astype(np.uint8).copy()
+
+    @staticmethod
+    def binarization_of_hsv_array(
+        arr: np.ndarray,
+        hue: Tuple[int, int],
+        saturation: Tuple[int, int],
+        brightness: Tuple[int, int],
+    ) -> np.ndarray:
+        h_channel = arr[:, :, 0]
+        s_channel = arr[:, :, 1]
+        b_channel = arr[:, :, 2]
+        hue_min, hue_max = hue
+        print(f"Typ danych tablicy wejściowej (arr.dtype): {arr.dtype}")
+        print(f"Kształt tablicy: {arr.shape}")
+
+        if hue_min <= hue_max:
+            hue_mask = (h_channel >= hue_min) & (h_channel <= hue_max)
+        else:
+            hue_mask = (h_channel >= hue_min) | (h_channel <= hue_max)
+
+        sat_min, sat_max = saturation
+        saturation_mask = (s_channel >= sat_min) & (s_channel <= sat_max)
+
+        val_min, val_max = brightness
+        brightness_mask = (b_channel >= val_min) & (b_channel <= val_max)
+        final_mask = hue_mask & saturation_mask & brightness_mask
+        return final_mask.astype(np.uint8) * 255
+
+    @staticmethod
+    def count_pixels(arr, r, g, b) -> int:
+        mask = np.all(arr == [r, g, b], axis=-1)
+        return np.count_nonzero(mask)
+
+    @staticmethod
+    def get_largest_segment(arr: np.ndarray) -> np.ndarray:
+        binary_input = arr[:, :, 0]
+        struct = generate_binary_structure(rank=2, connectivity=2)
+
+        # 2. Etykietowanie (Labeling) - to jest kluczowy algorytm CCL
+        # labeled_array: tablica gdzie każdy piksel ma ID grupy (0, 1, 2, 3...)
+        # num_features: liczba znalezionych grup
+        labeled_array, num_features = label(binary_input > 0, structure=struct)
+
+        # Szybkie wyjście, jeśli nie znaleziono żadnych obiektów (sam czarny obraz)
+        if num_features == 0:
+            return np.zeros_like(binary_input, dtype=np.uint8)
+
+        # 3. Zliczanie wielkości grup (Histogram)
+        # bincount zlicza ile razy występuje każda liczba w labeled_array.
+        # .ravel() spłaszcza tablicę do 1D (wymagane dla bincount).
+        sizes = np.bincount(labeled_array.ravel())
+
+        # 4. Wyzerowanie tła
+        # Indeks 0 w 'sizes' to liczba pikseli tła. Nie chcemy, żeby tło wygrało
+        # jako "największy obiekt", więc ustawiamy jego wielkość na 0.
+        sizes[0] = 0
+
+        # 5. Znalezienie ID zwycięzcy
+        # argmax zwraca indeks (czyli ID grupy) o największej wartości.
+        max_label_id = sizes.argmax()
+
+        # 6. Stworzenie maski wynikowej
+        # Tworzymy tablicę True/False tam, gdzie ID zgadza się ze zwycięzcą
+        largest_mask = (labeled_array == max_label_id).astype(np.uint8) * 255
+        return np.stack((largest_mask, largest_mask, largest_mask), axis=-1)
