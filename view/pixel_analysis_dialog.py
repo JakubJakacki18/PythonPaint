@@ -69,14 +69,17 @@ class PixelAnalysisDialog(QDialog, Ui_PixelAnalysisDialog):
     def update_hue(self):
         self.hue_value = self.hueSlider.value()
         self.update_image()
+        self.update_info_range()
 
     def update_saturation(self):
         self.saturation_value = self.saturationSlider.value()
         self.update_image()
+        self.update_info_range()
 
     def update_brightness(self):
         self.brightness_value = self.brightnessSlider.value()
         self.update_image()
+        self.update_info_range()
 
     def get_hsv_range_values(self):
         return self.hue_value, self.saturation_value, self.brightness_value
@@ -96,3 +99,9 @@ class PixelAnalysisDialog(QDialog, Ui_PixelAnalysisDialog):
     def showEvent(self, event):
         super().showEvent(event)
         QTimer.singleShot(0, self.presenter.init_image)
+
+    def update_info_range(self):
+        hue, saturation, brightness = self.get_hsv_range_values()
+        self.hueInfoRange.setText(f"{hue[0]*2} - {hue[1]*2}")
+        self.saturationInfoRange.setText(f"{saturation[0]} - {saturation[1]}")
+        self.brightnessInfoRange.setText(f"{brightness[0]} - {brightness[1]}")
